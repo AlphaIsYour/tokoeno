@@ -1,0 +1,177 @@
+/* Style untuk chatbot dengan tema glassmorphism dan ikon baru */
+.chatbot-wrapper {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.chatbot-button {
+  width: 150px;
+  height: 40px;
+  border-radius: 40px;
+  background: rgb(1, 2, 2);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.chatbot-button:hover {
+  background: rgb(36, 36, 36);
+  transform: scale(1.1);
+}
+
+/* Chatbox */
+.chatbox {
+  position: absolute;
+  bottom: 55px;
+  right: 0;
+  width: 350px;
+  height: 450px;
+  background: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Dibuat lebih solid agar lebih terbaca */
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: bottom right;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+.chatbox.show {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.chatbox.hide {
+  transform: scale(0);
+  opacity: 0;
+}
+
+/* Header */
+.chatbox-header {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  color: white;
+  font-weight: bold;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  font-size: 16px;
+}
+
+.chatbox-header .header-icons svg {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.chatbox-header .header-icons svg:hover {
+  color: #ff4b4b;
+}
+
+/* Chat Body */
+.chatbox-body {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Chat Messages */
+.chat-message {
+  padding: 10px 14px;
+  margin: 6px 0;
+  border-radius: 12px;
+  max-width: 80%;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+/* User Chat */
+.chat-message.user {
+  background: #007bff;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+/* Bot Chat */
+.chat-message.bot {
+  background: #e9ecef;
+  color: #333;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+/* Chat Footer */
+.chatbox-footer {
+  display: flex;
+  padding: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  background: white;
+}
+
+.chatbox-footer input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(155, 155, 155, 0.1);
+  color: #000;
+  font-size: 14px;
+  outline: none;
+}
+
+.chatbox-footer button {
+  margin-left: 8px;
+  padding: 10px 14px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatbox-footer button:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Loading Message */
+.chat-message.bot::after {
+  content: "⏳ Yoraa sedang mengetik...";
+  font-size: 12px;
+  opacity: 0.7;
+  color: #555;
+}

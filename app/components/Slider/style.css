@@ -1,0 +1,11 @@
+.slider {
+  box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0.2);
+}
+.slider-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-content {
+  transition: opacity 0.8s ease-in-out;
+}
