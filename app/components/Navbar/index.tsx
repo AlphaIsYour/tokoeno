@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { Space_Grotesk } from "next/font/google";
+const grotesk = Space_Grotesk({ subsets: ["latin"], weight: ["300", "700"] });
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./style.css";
 import {
@@ -24,7 +26,7 @@ const Navbar = () => {
               {/* Logo */}
               <Link
                 href="/"
-                className="text-blue-400 font-bold text-center text-2xl w-1/12"
+                className={`text-blue-400 font-bold text-center text-2xl w-1/12`}
               >
                 Youralpha
               </Link>
@@ -80,7 +82,7 @@ const Navbar = () => {
         </div>
 
         {/* Bottom Navbar - Location and product names */}
-        <div className="w-full border-b border-gray-200 py-2 pl-52">
+        <div className=" w-full border-b border-gray-200 py-2 pl-52">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between">
               {/* Popular Product Names - Right side */}
@@ -114,14 +116,16 @@ const Navbar = () => {
 
       {/* Kategori Dropdown dengan animasi */}
       <div
-        className={`fixed w-full h-90 bg-white shadow-lg z-40 transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`fixed w-full h-90 bg-white shadow-lg z-40 transition-all duration-700 ease-in-out overflow-hidden ${
           showKategori ? "opacity-100 max-h-90" : "opacity-0 max-h-0"
         }`}
         style={{ top: "97px" }} // Sesuaikan dengan tinggi navbar
         onMouseEnter={() => setShowKategori(true)}
         onMouseLeave={() => setShowKategori(false)}
       >
-        <div className="max-w-7xl mx-auto px-8 py-6 grid grid-cols-5 gap-6">
+        <div
+          className={`${grotesk.className} max-w-7xl mx-auto px-8 py-6 grid grid-cols-5 gap-6`}
+        >
           {/* Kolom 1 */}
           <div>
             <h3 className="font-medium text-gray-800 mb-3">Elektronik</h3>
