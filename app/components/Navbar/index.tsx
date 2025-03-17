@@ -87,12 +87,12 @@ const Navbar = () => {
             <div className="flex items-center justify-between">
               {/* Popular Product Names - Right side */}
               <div className="flex flex-1 gap-4 overflow-x-auto whitespace-nowrap text-xs text-gray-600 ml-6">
-                <span>Samsung Note 10</span>
-                <span>Charger Mobil</span>
-                <span>Samsung A73</span>
-                <span>Pull Up Bar</span>
-                <span>Hdd 1tb</span>
-                <span>Xbox Series X</span>
+                <span>Monitor LED</span>
+                <span>Keyboard Mekanikal</span>
+                <span>Motherboard</span>
+                <span>RAM 8GB</span>
+                <span>Power Supply</span>
+                <span>HP Bekas</span>
                 {/* Delivery Location - Left side */}
                 <div className="flex items-center text-gray-600 ml-1 pl-135">
                   <FontAwesomeIcon
@@ -101,7 +101,7 @@ const Navbar = () => {
                     style={{ width: "10px", height: "16px" }}
                   />
                   <span className="text-xs mr-1">Dikirim ke</span>
-                  <span className="font-medium text-xs">Jakarta Pusat..</span>
+                  <span className="font-medium text-xs">Malang Kota ..</span>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     className="text-xs mr-1"
