@@ -1,8 +1,5 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./style.css";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
 import "./style.css";
 
 const Category = () => {

@@ -1,33 +1,31 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// Definisikan fungsi GET sebagai Route Handler
 export async function GET(
   request: Request,
   { params }: { params: { slug: string } }
 ) {
-  // Extract slug from params secara langsung
-  const { slug } = params;
-
   try {
-    // Gunakan slug dalam query
+    // Validasi slug
+    if (!params?.slug || typeof params.slug !== "string") {
+      return NextResponse.json({ error: "Slug invalid" }, { status: 400 });
+    }
+
+    // Ambil data dari DB
     const product = await prisma.product.findUnique({
-      where: { slug },
+      where: { slug: params.slug }, // <-- params.slug sudah aman
       include: { images: true },
     });
 
     if (!product) {
-      return NextResponse.json(
-        { error: "Produk tidak ditemukan" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
     return NextResponse.json(product);
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error(error);
     return NextResponse.json(
-      { error: "Gagal mengambil produk" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

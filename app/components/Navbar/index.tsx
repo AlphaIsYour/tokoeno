@@ -12,9 +12,11 @@ import {
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import LoginPopup from "@/app/components/LoginPopup";
 
 const Navbar = () => {
   const [showKategori, setShowKategori] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   return (
     <>
@@ -70,12 +72,22 @@ const Navbar = () => {
 
               {/* Auth Buttons */}
               <div className="flex items-center gap-2 w-1/12 justify-end">
-                <button className="px-4 py-1.5 text-sm text-blue-500 border border-blue-500 rounded-lg font-medium hover:bg-blue-50">
+                <button
+                  onClick={() => setIsLoginOpen(true)}
+                  className="px-4 py-1.5 text-sm text-blue-500 border border-blue-500 rounded-lg font-medium hover:bg-blue-50"
+                >
                   Masuk
                 </button>
-                <button className="px-4 py-1.5 text-sm text-white bg-blue-500 rounded-lg font-medium hover:bg-blue-600">
-                  Daftar
-                </button>
+
+                <LoginPopup
+                  isOpen={isLoginOpen}
+                  onClose={() => setIsLoginOpen(false)}
+                />
+                <Link href={"/register"}>
+                  <button className="px-4 py-1.5 text-sm text-white bg-blue-500 rounded-lg font-medium hover:bg-blue-600">
+                    Daftar
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
