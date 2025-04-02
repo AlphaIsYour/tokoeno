@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +40,13 @@ const RegisterPage = () => {
               <span className="text-green-500 cursor-pointer">Masuk</span>
             </p>
             <button className="w-full flex items-center justify-center gap-2 mt-4 p-2 border rounded-lg shadow-sm hover:bg-gray-100">
-              <img src="/img/google.png" alt="Google" className="w-8 h-8" />{" "}
+              <Image
+                src="/img/google.png"
+                alt="Google"
+                width={32} // w-8 = 32px (8 * 4)
+                height={32} // h-8 = 32px
+                className="w-8 h-8" // Tetap pertahankan class styling
+              />{" "}
               Google
             </button>
             <div className="flex items-center my-4">

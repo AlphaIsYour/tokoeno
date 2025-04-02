@@ -13,19 +13,25 @@ export async function GET(
 
     // Ambil data dari DB
     const product = await prisma.product.findUnique({
-      where: { slug: params.slug }, // <-- params.slug sudah aman
+      where: { slug: params.slug },
       include: { images: true },
     });
 
     if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Produk tidak ditemukan" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(product);
   } catch (error) {
-    console.error(error);
+    console.error("[ERROR_API_GET_PRODUCT]", error);
+    if (error instanceof Error) {
+      console.error("Error details:", error.message);
+    }
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

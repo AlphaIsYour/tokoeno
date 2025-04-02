@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import {
   FaHeart,
   FaShareAlt,
@@ -165,10 +166,13 @@ export default function ProdukDetail() {
           {/* Image Column */}
           <div className="lg:sticky lg:top-20 self-start">
             <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-              <img
+              <Image
                 src={selectedImage}
                 alt={`Gambar Utama ${produk.name}`}
-                className="w-full h-full object-cover transition-opacity duration-300"
+                fill
+                className="object-cover transition-opacity duration-300"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
               />
             </div>
             <div className="flex gap-2 mt-2 overflow-x-auto pb-2">
@@ -182,10 +186,12 @@ export default function ProdukDetail() {
                       : "border-gray-200"
                   }`}
                 >
-                  <img
+                  <Image
                     src={img.url}
                     alt={`Thumbnail ${img.id}`}
-                    className="w-16 h-16 object-cover rounded-md"
+                    fill
+                    className="object-cover rounded-md"
+                    sizes="64px"
                   />
                 </button>
               ))}
@@ -196,10 +202,12 @@ export default function ProdukDetail() {
           <div className="space-y-6">
             {/* Store Info */}
             <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-              <img
+              <Image
                 src={produk.store.logo}
                 alt={`Logo ${produk.store.name}`}
-                className="w-12 h-12 rounded-full object-cover"
+                fill
+                className="rounded-full object-cover"
+                sizes="48px"
               />
               <div className="flex-1">
                 <h2 className="font-semibold">{produk.store.name}</h2>
@@ -305,11 +313,14 @@ export default function ProdukDetail() {
               {activeTab === "toko" && (
                 <div className="space-y-6">
                   <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                    <img
+                    <Image
                       src={produk.store.logo}
                       alt={`Logo ${produk.store.name}`}
-                      className="w-16 h-16 rounded-full object-cover"
+                      fill
+                      className="rounded-full object-cover"
+                      sizes="64px"
                     />
+
                     <div>
                       <h2 className="font-bold text-lg">{produk.store.name}</h2>
                       <p className="text-gray-500">Online 10 menit lalu</p>
@@ -582,10 +593,12 @@ export default function ProdukDetail() {
                               key={photoIdx}
                               className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden"
                             >
-                              <img
-                                src="/placeholder.jpg"
+                              <Image
+                                src="/placeholder-review.jpg" // Ganti dengan path gambar sebenarnya
                                 alt={`Ulasan ${idx}`}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
+                                sizes="80px"
                               />
                             </div>
                           ))}

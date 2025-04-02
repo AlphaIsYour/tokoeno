@@ -3,6 +3,13 @@ module.exports = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ["localhost"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };

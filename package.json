@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -16,7 +17,6 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@huggingface/inference": "^3.5.2",
-    "@prisma/client": "^6.5.0",
     "@prisma/engines": "^6.5.0",
     "axios": "^1.8.3",
     "bcryptjs": "^3.0.2",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@prisma/client": "^6.5.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.13.11",
     "@types/react": "^19.0.12",
@@ -39,7 +40,7 @@
     "@types/react-fontawesome": "^1.6.8",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
-    "next": "^15.3.0-canary.18",
+    "next": "^15.2.3",
     "prisma": "^6.5.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
