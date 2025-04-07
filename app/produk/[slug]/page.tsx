@@ -480,7 +480,7 @@ export default function ProdukDetail() {
 
           <div className="grid lg:grid-cols-12 gap-8">
             {/* Rating Summary */}
-            <div className="lg:col-span-4 p-6 bg-gray-50 rounded-xl">
+            <div className="lg:col-span-4 h-80 p-6 bg-gray-50 rounded-xl">
               <div className="flex items-center mb-6">
                 <span className="text-4xl font-bold mr-4">4.7</span>
                 <div>
