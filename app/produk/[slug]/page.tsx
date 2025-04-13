@@ -36,6 +36,55 @@ interface Product {
   rating: number;
 }
 
+// Komponen Skeleton untuk placeholder
+const SkeletonDetail = () => {
+  return (
+    <div className="max-w-6xl mx-auto p-5 mt-30">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Skeleton Image Column */}
+        <div className="lg:sticky lg:top-20 self-start">
+          <div className="aspect-square bg-gray-200 animate-shimmer rounded-lg"></div>
+          <div className="flex gap-2 mt-2">
+            {Array(4)
+              .fill(0)
+              .map((_, idx) => (
+                <div
+                  key={idx}
+                  className="w-16 h-16 bg-gray-200 animate-shimmer rounded-lg"
+                ></div>
+              ))}
+          </div>
+        </div>
+
+        {/* Skeleton Product Info Column */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+            <div className="w-12 h-12 bg-gray-200 animate-shimmer rounded-full"></div>
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-gray-200 animate-shimmer rounded w-1/2"></div>
+              <div className="h-3 bg-gray-200 animate-shimmer rounded w-1/3"></div>
+            </div>
+          </div>
+          <div className="h-6 bg-gray-200 animate-shimmer rounded w-3/4"></div>
+          <div className="h-8 bg-gray-200 animate-shimmer rounded w-1/3"></div>
+          <div className="h-4 bg-gray-200 animate-shimmer rounded w-full"></div>
+        </div>
+
+        {/* Skeleton Purchase Column */}
+        <div className="lg:sticky lg:top-20 self-start">
+          <div className="border p-6 rounded-xl bg-white shadow-lg">
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-200 animate-shimmer rounded w-1/2"></div>
+              <div className="h-10 bg-gray-200 animate-shimmer rounded"></div>
+              <div className="h-12 bg-gray-200 animate-shimmer rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function ProdukDetail() {
   const params = useParams();
   const [produk, setProduk] = useState<Product | null>(null);
@@ -50,13 +99,18 @@ export default function ProdukDetail() {
   useEffect(() => {
     async function fetchProduct() {
       try {
+        // Simulasi jeda 1.5 detik untuk efek skeleton
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
         const res = await fetch(`/api/products/${params.slug}`);
         if (!res.ok) throw new Error("Produk tidak ditemukan");
         const data = await res.json();
 
-        const enhancedData = {
+        // Pastikan data sesuai struktur
+        const enhancedData: Product = {
           ...data,
-          variants: [
+          images: data.images || [{ id: "default", url: "/img/default.jpg" }],
+          variants: data.variants || [
             {
               name: "Warna",
               options: [
@@ -75,27 +129,29 @@ export default function ProdukDetail() {
               ],
             },
           ],
-          store: {
+          store: data.store || {
             id: "st1",
             name: "Toko Fashion Kece",
-            logo: "/api/placeholder/40/40",
+            logo: "/img/store-logo.jpg",
             followers: 5432,
           },
-          rating: 4.7,
+          rating: data.rating || 4.7,
         };
 
         setProduk(enhancedData);
-        setSelectedImage(enhancedData.images[0]?.url || "");
+        setSelectedImage(enhancedData.images[0]?.url || "/img/default.jpg");
 
         const initialVariants: Record<
           string,
           { id: string; name: string; additionalPrice: number }
         > = {};
         enhancedData.variants.forEach(
-          (variant: {
-            name: string;
-            options: { id: string; name: string; additionalPrice: number }[];
-          }) => {
+          (
+            variant: {
+              name: string;
+              options: { id: string; name: string; additionalPrice: number }[];
+            } // Tambah tipe eksplisit
+          ) => {
             initialVariants[variant.name] = variant.options[0];
           }
         );
@@ -144,11 +200,7 @@ export default function ProdukDetail() {
   };
 
   if (loading) {
-    return (
-      <div className="text-center py-8">
-        <div className="animate-pulse text-gray-500 text-xl">Memuat...</div>
-      </div>
-    );
+    return <SkeletonDetail />;
   }
 
   if (!produk) {
@@ -169,7 +221,8 @@ export default function ProdukDetail() {
               <Image
                 src={selectedImage}
                 alt={`Gambar Utama ${produk.name}`}
-                fill
+                width={400}
+                height={400}
                 className="object-cover transition-opacity duration-300"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
@@ -180,7 +233,7 @@ export default function ProdukDetail() {
                 <button
                   key={img.id}
                   onClick={() => setSelectedImage(img.url)}
-                  className={`flex-shrink-0 relative block rounded-lg border-2 transition-all ${
+                  className={`flex-shrink-0 relative block rounded-lg border-2 transition-all w-16 h-16 ${
                     selectedImage === img.url
                       ? "border-blue-500 scale-105"
                       : "border-gray-200"
@@ -189,7 +242,8 @@ export default function ProdukDetail() {
                   <Image
                     src={img.url}
                     alt={`Thumbnail ${img.id}`}
-                    fill
+                    width={64}
+                    height={64}
                     className="object-cover rounded-md"
                     sizes="64px"
                   />
@@ -202,13 +256,15 @@ export default function ProdukDetail() {
           <div className="space-y-6">
             {/* Store Info */}
             <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-              <Image
-                src={produk.store.logo}
-                alt={`Logo ${produk.store.name}`}
-                fill
-                className="rounded-full object-cover"
-                sizes="48px"
-              />
+              <div className="relative w-12 h-12">
+                <Image
+                  src={produk.store.logo}
+                  alt={`Logo ${produk.store.name}`}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover"
+                />
+              </div>
               <div className="flex-1">
                 <h2 className="font-semibold">{produk.store.name}</h2>
                 <p className="text-sm text-gray-500">
@@ -245,7 +301,7 @@ export default function ProdukDetail() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 font-medium flex-shrink-0 border-b-2 transition-colors ${
+                    className={`px-4 py-2 chcia font-medium flex-shrink-0 border-b-2 transition-colors ${
                       activeTab === tab
                         ? "border-blue-500 text-blue-600"
                         : "border-transparent text-gray-500 hover:text-blue-500"
@@ -277,50 +333,62 @@ export default function ProdukDetail() {
 
               {activeTab === "varian" && (
                 <div className="space-y-6">
-                  {produk.variants.map((variant) => (
-                    <div key={variant.name}>
-                      <h3 className="font-medium mb-3">{variant.name}</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {variant.options.map((option) => (
-                          <button
-                            key={option.id}
-                            onClick={() =>
-                              setSelectedVariants({
-                                ...selectedVariants,
-                                [variant.name]: option,
-                              })
-                            }
-                            className={`px-4 py-2 rounded-full border transition-all ${
-                              selectedVariants[variant.name]?.id === option.id
-                                ? "border-blue-500 bg-blue-50 text-blue-600"
-                                : "border-gray-200 hover:border-blue-300"
-                            }`}
-                          >
-                            {option.name}
-                            {option.additionalPrice > 0 && (
-                              <span className="ml-2 text-sm">
-                                +Rp{option.additionalPrice.toLocaleString()}
-                              </span>
-                            )}
-                          </button>
-                        ))}
+                  {produk.variants.map(
+                    (
+                      variant: {
+                        name: string;
+                        options: {
+                          id: string;
+                          name: string;
+                          additionalPrice: number;
+                        }[];
+                      } // Tambah tipe eksplisit
+                    ) => (
+                      <div key={variant.name}>
+                        <h3 className="font-medium mb-3">{variant.name}</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {variant.options.map((option) => (
+                            <button
+                              key={option.id}
+                              onClick={() =>
+                                setSelectedVariants({
+                                  ...selectedVariants,
+                                  [variant.name]: option,
+                                })
+                              }
+                              className={`px-4 py-2 rounded-full border transition-all ${
+                                selectedVariants[variant.name]?.id === option.id
+                                  ? "border-blue-500 bg-blue-50 text-blue-600"
+                                  : "border-gray-200 hover:border-blue-300"
+                              }`}
+                            >
+                              {option.name}
+                              {option.additionalPrice > 0 && (
+                                <span className="ml-2 text-sm">
+                                  +Rp{option.additionalPrice.toLocaleString()}
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               )}
 
               {activeTab === "toko" && (
                 <div className="space-y-6">
                   <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                    <Image
-                      src={produk.store.logo}
-                      alt={`Logo ${produk.store.name}`}
-                      fill
-                      className="rounded-full object-cover"
-                      sizes="64px"
-                    />
-
+                    <div className="relative w-16 h-16">
+                      <Image
+                        src={produk.store.logo}
+                        alt={`Logo ${produk.store.name}`}
+                        width={64}
+                        height={64}
+                        className="rounded-full object-cover"
+                      />
+                    </div>
                     <div>
                       <h2 className="font-bold text-lg">{produk.store.name}</h2>
                       <p className="text-gray-500">Online 10 menit lalu</p>
@@ -480,7 +548,7 @@ export default function ProdukDetail() {
 
           <div className="grid lg:grid-cols-12 gap-8">
             {/* Rating Summary */}
-            <div className="lg:col-span-4 h-80 p-6 bg-gray-50 rounded-xl">
+            <div className="lg:col-span-4 p-6 bg-gray-50 rounded-xl">
               <div className="flex items-center mb-6">
                 <span className="text-4xl font-bold mr-4">4.7</span>
                 <div>
@@ -509,9 +577,7 @@ export default function ProdukDetail() {
 
             {/* Reviews List */}
             <div className="lg:col-span-8">
-              {/* Review Filters */}
               <div className="space-y-6">
-                {/* Filter Options */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   {[
                     "Semua",
@@ -533,11 +599,9 @@ export default function ProdukDetail() {
                   ))}
                 </div>
 
-                {/* Reviews List */}
                 <div className="space-y-8">
                   {[1, 2, 3].map((idx) => (
                     <div key={idx} className="pb-6 border-b border-gray-200">
-                      {/* Review Header */}
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                           <span className="font-medium">U{idx}</span>
@@ -557,7 +621,6 @@ export default function ProdukDetail() {
                         </div>
                       </div>
 
-                      {/* Rating Stars */}
                       <div className="flex items-center gap-2 mb-3">
                         <div className="flex text-yellow-400">
                           {Array(5)
@@ -576,7 +639,6 @@ export default function ProdukDetail() {
                         </span>
                       </div>
 
-                      {/* Review Content */}
                       <p className="text-gray-600 mb-4">
                         {idx === 1
                           ? "Produk sangat bagus dan sesuai dengan ekspektasi. Bahannya nyaman dipakai dan jahitannya rapi. Pengiriman juga cepat. Puas dengan pembelian ini!"
@@ -585,7 +647,6 @@ export default function ProdukDetail() {
                           : "Barangnya cepat sampai dan sesuai dengan deskripsi. Harga juga worth it dengan kualitas yang diberikan. Akan repeat order lagi nanti."}
                       </p>
 
-                      {/* Review Photos */}
                       {idx === 1 && (
                         <div className="flex gap-3">
                           {[1, 2].map((photoIdx) => (
@@ -594,18 +655,17 @@ export default function ProdukDetail() {
                               className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden"
                             >
                               <Image
-                                src="/placeholder-review.jpg" // Ganti dengan path gambar sebenarnya
+                                src="/img/review-placeholder.jpg"
                                 alt={`Ulasan ${idx}`}
-                                fill
+                                width={80}
+                                height={80}
                                 className="object-cover"
-                                sizes="80px"
                               />
                             </div>
                           ))}
                         </div>
                       )}
 
-                      {/* Helpful Actions */}
                       <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
                         <button className="flex items-center gap-1 hover:text-blue-600">
                           <FaHeart className="text-xs" />
@@ -618,7 +678,6 @@ export default function ProdukDetail() {
                     </div>
                   ))}
 
-                  {/* Load More Button */}
                   <button className="w-full py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
                     Lihat Semua 128 Ulasan
                   </button>

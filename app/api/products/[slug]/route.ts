@@ -1,19 +1,24 @@
+// app/api/products/[slug]/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> } // Eksplisit pake Promise
 ) {
   try {
+    // Ambil params dengan await
+    const params = await context.params;
+    const slug = params.slug;
+
     // Validasi slug
-    if (!params?.slug || typeof params.slug !== "string") {
+    if (!slug || typeof slug !== "string") {
       return NextResponse.json({ error: "Slug invalid" }, { status: 400 });
     }
 
     // Ambil data dari DB
     const product = await prisma.product.findUnique({
-      where: { slug: params.slug },
+      where: { slug },
       include: { images: true },
     });
 
