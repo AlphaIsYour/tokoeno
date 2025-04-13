@@ -217,12 +217,11 @@ export default function ProdukDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Image Column */}
           <div className="lg:sticky lg:top-20 self-start">
-            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
               <Image
                 src={selectedImage}
                 alt={`Gambar Utama ${produk.name}`}
-                width={400}
-                height={400}
+                fill // Ganti width/height statis
                 className="object-cover transition-opacity duration-300"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
@@ -242,8 +241,7 @@ export default function ProdukDetail() {
                   <Image
                     src={img.url}
                     alt={`Thumbnail ${img.id}`}
-                    width={64}
-                    height={64}
+                    fill // Ganti width/height statis
                     className="object-cover rounded-md"
                     sizes="64px"
                   />

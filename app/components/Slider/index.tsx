@@ -1,3 +1,4 @@
+// app/components/Slider/index.tsx
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
@@ -9,15 +10,54 @@ import {
 import Image from "next/image";
 import "./style.css";
 
-const images = ["/img/r1.jpg", "/img/r5.jpg", "/img/r3.jpg", "/img/r4.jpg"];
+// Tipe buat event
+interface Event {
+  id: number;
+  name: string;
+  slug: string;
+  imageUrl: string;
+}
 
-// Duplikasi gambar pertama di akhir & gambar terakhir di awal
-const extendedImages = [images[images.length - 1], ...images, images[0]];
+// Skeleton Loading
+const SkeletonSlider = () => {
+  return (
+    <div className="slider-container relative w-335 mx-auto h-80 bg-gray-200 animate-shimmer rounded-xl overflow-hidden">
+      <div className="w-full h-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer"></div>
+    </div>
+  );
+};
 
 const Slider = () => {
-  const [currentIndex, setCurrentIndex] = useState(1); // Mulai dari index ke-1 (bukan 0)
+  const [events, setEvents] = useState<Event[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isHovering, setIsHovering] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch events
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        const res = await fetch("/api/events");
+        if (!res.ok) throw new Error("Gagal ambil events");
+        const data = await res.json();
+        console.log("[SLIDER_EVENTS]", data); // Debug
+        setEvents(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchEvents();
+  }, []);
+
+  // Buat images dan extendedImages
+  const images = events.map((event) => event.imageUrl);
+  const extendedImages = events.length
+    ? [images[images.length - 1], ...images, images[0]]
+    : [];
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => prevIndex + 1);
@@ -27,29 +67,29 @@ const Slider = () => {
     setCurrentIndex((prevIndex) => prevIndex - 1);
   };
 
-  // Auto-slide setiap 5 detik (5000ms)
+  // Auto-slide
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!isHovering) nextSlide();
+      if (!isHovering && !loading) nextSlide();
     }, 5000);
     return () => clearInterval(interval);
-  }, [nextSlide, isHovering]);
+  }, [nextSlide, isHovering, loading]);
 
-  // Reset posisi saat mencapai batas kanan
+  // Reset batas kanan
   useEffect(() => {
-    if (currentIndex === extendedImages.length - 1) {
+    if (events.length && currentIndex === extendedImages.length - 1) {
       setTimeout(() => {
         setIsTransitioning(false);
         setCurrentIndex(1);
-      }, 800); // Delay reset agar smooth
+      }, 800);
     } else {
       setIsTransitioning(true);
     }
-  }, [currentIndex]);
+  }, [currentIndex, events.length, extendedImages.length]);
 
-  // Reset posisi saat mencapai batas kiri
+  // Reset batas kiri
   useEffect(() => {
-    if (currentIndex === 0) {
+    if (events.length && currentIndex === 0) {
       setTimeout(() => {
         setIsTransitioning(false);
         setCurrentIndex(images.length);
@@ -57,7 +97,12 @@ const Slider = () => {
     } else {
       setIsTransitioning(true);
     }
-  }, [currentIndex]);
+  }, [currentIndex, events.length, images.length]);
+
+  // Skeleton kalau loading atau kosong
+  if (loading || !events.length) {
+    return <SkeletonSlider />;
+  }
 
   return (
     <div
