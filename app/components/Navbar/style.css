@@ -12,3 +12,23 @@
   border-radius: 10px;
   transition: 0.2s ease all;
 }
+
+.profile-img {
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.dropdown-menu {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
