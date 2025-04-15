@@ -5,10 +5,9 @@ import { Space_Grotesk } from "next/font/google";
 const grotesk = Space_Grotesk({ subsets: ["latin"], weight: ["300", "700"] });
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./style.css";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import {
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  faUser,
   faSignOutAlt,
   faCartShopping,
   faLocationDot,
@@ -17,6 +16,8 @@ import {
   faEdit,
   faBox,
   faCog,
+  faUser,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import LoginPopup from "@/app/components/LoginPopup";
@@ -26,31 +27,150 @@ const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showKategori, setShowKategori] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <>
       <header className="navbar w-full fixed top-0 left-0 bg-white z-50 shadow-md">
         <div className="w-full py-3">
-          <div className="mx-auto px-8 grid grid-cols-12 p-2 justify-between">
-            <div className="flex items-center col-span-12 gap-2">
-              <Link
-                href="/"
-                className={`text-blue-400 font-bold text-center text-2xl w-1/12`}
-              >
+          {/* Desktop Version */}
+          <div className="hidden md:block">
+            <div className="mx-auto px-8 grid grid-cols-12 p-2 justify-between">
+              <div className="flex items-center col-span-12 gap-2">
+                <Link
+                  href="/"
+                  className={`text-blue-400 font-bold text-center text-2xl w-1/12`}
+                >
+                  Youralpha
+                </Link>
+
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowKategori(true)}
+                  onMouseLeave={() => setShowKategori(false)}
+                >
+                  <button className="kategori px-4 py-1.5 text-sm bg-white font-medium hover:bg-gray-300">
+                    Kategori
+                  </button>
+                </div>
+
+                <div className="relative w-8/12 mx-2">
+                  <input
+                    type="text"
+                    placeholder="Cari di Youralpha"
+                    className="w-full py-2 px-4 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      className="text-gray-400 text-base"
+                    />
+                  </div>
+                </div>
+
+                <div className="w-1/12">
+                  <button className="p-2 text-gray-700">
+                    <FontAwesomeIcon
+                      icon={faCartShopping}
+                      className="text-3xl ml-5"
+                      style={{ width: "24px", height: "24px" }}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2 w-1/12 justify-end">
+                  {session ? (
+                    <div
+                      className="relative"
+                      onMouseEnter={() => setShowDropdown(true)}
+                      onMouseLeave={() => setShowDropdown(false)}
+                    >
+                      <button className="flex items-center gap-2 px-4 py-1.5 text-sm text-blue-500 rounded-lg font-medium hover:bg-blue-50">
+                        {session?.user?.image && (
+                          <Image
+                            src="/img/r6.jpg"
+                            alt="Profile"
+                            width={32}
+                            height={32}
+                            className="rounded-full object-cover"
+                          />
+                        )}
+                        <span className="truncate max-w-[100px]">
+                          {session.user?.name || "User"}
+                        </span>
+                      </button>
+
+                      {showDropdown && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50">
+                          <Link href="/profile/edit">
+                            <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                              <FontAwesomeIcon icon={faEdit} />
+                              Edit Profil
+                            </button>
+                          </Link>
+                          <Link href="/orders">
+                            <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                              <FontAwesomeIcon icon={faBox} />
+                              Pesanan Saya
+                            </button>
+                          </Link>
+                          <Link href="/settings">
+                            <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                              <FontAwesomeIcon icon={faCog} />
+                              Pengaturan
+                            </button>
+                          </Link>
+                          <button
+                            onClick={() => signOut({ callbackUrl: "/" })}
+                            className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            <FontAwesomeIcon icon={faSignOutAlt} />
+                            Logout
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => setIsLoginOpen(true)}
+                        className="px-4 py-1.5 text-sm text-blue-500 border border-blue-500 rounded-lg font-medium hover:bg-blue-50"
+                      >
+                        Masuk
+                      </button>
+                      <Link href="/register">
+                        <button className="px-4 py-1.5 text-sm text-white bg-blue-500 rounded-lg font-medium hover:bg-blue-600">
+                          Daftar
+                        </button>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Version */}
+          <div className="md:hidden px-4">
+            {/* Top Row */}
+            <div className="flex justify-between items-center">
+              <Link href="/" className="text-blue-400 font-bold text-2xl">
                 Youralpha
               </Link>
 
-              <div
-                className="relative"
-                onMouseEnter={() => setShowKategori(true)}
-                onMouseLeave={() => setShowKategori(false)}
-              >
-                <button className="kategori px-4 py-1.5 text-sm bg-white font-medium hover:bg-gray-300">
-                  Kategori
+              <div className="flex items-center gap-4">
+                <button
+                  className="p-2 text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                >
+                  <FontAwesomeIcon icon={faBars} className="text-2xl" />
                 </button>
               </div>
+            </div>
 
-              <div className="relative w-8/12 mx-2">
+            {/* Search Bar */}
+            <div className="mt-2">
+              <div className="relative">
                 <input
                   type="text"
                   placeholder="Cari di Youralpha"
@@ -63,88 +183,115 @@ const Navbar = () => {
                   />
                 </div>
               </div>
+            </div>
 
-              <div className="w-1/12">
-                <button className="p-2 text-gray-700">
-                  <FontAwesomeIcon
-                    icon={faCartShopping}
-                    className="text-3xl ml-5"
-                    style={{ width: "24px", height: "24px" }}
-                  />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2 w-1/12 justify-end">
-                {session ? (
-                  <div
-                    className="relative"
-                    onMouseEnter={() => setShowDropdown(true)}
-                    onMouseLeave={() => setShowDropdown(false)}
+            {/* Mobile Menu */}
+            {isMobileMenuOpen && (
+              <div className="absolute w-full bg-white shadow-lg rounded-b-lg z-50 left-0 mt-1 border-t border-gray-200">
+                <div className="space-y-1 py-2">
+                  {/* Kategori */}
+                  <button
+                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 hover:bg-gray-100 flex items-center gap-3"
+                    onClick={() => {
+                      setShowKategori(true);
+                      setIsMobileMenuOpen(false);
+                    }}
                   >
-                    <button className="flex items-center gap-2 px-4 py-1.5 text-sm text-blue-500 rounded-lg font-medium hover:bg-blue-50">
-                      {session.user?.image && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src="./img/r6.jpg"
-                          alt="Profile"
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
-                      )}
-                      <span className="truncate max-w-[100px]">
-                        {session.user?.name || "User"}
-                      </span>
-                    </button>
+                    <FontAwesomeIcon
+                      icon={faChevronDown}
+                      className="text-gray-500 w-3 h-3"
+                    />
+                    <span>Kategori</span>
+                  </button>
 
-                    {showDropdown && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50">
+                  {/* Cart */}
+                  <Link href="/cart" className="block">
+                    <button className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3">
+                      <FontAwesomeIcon
+                        icon={faCartShopping}
+                        className="text-gray-500 w-4 h-4"
+                      />
+                      <span>Keranjang</span>
+                    </button>
+                  </Link>
+
+                  {session ? (
+                    <>
+                      {/* Profile Menu - Mirip dengan desktop */}
+                      <div className="border-t border-gray-200 pt-1">
                         <Link href="/profile/edit">
-                          <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <FontAwesomeIcon icon={faEdit} />
-                            Edit Profil
+                          <button className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3">
+                            <FontAwesomeIcon
+                              icon={faEdit}
+                              className="text-gray-500 w-4 h-4"
+                            />
+                            <span>Edit Profil</span>
                           </button>
                         </Link>
                         <Link href="/orders">
-                          <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <FontAwesomeIcon icon={faBox} />
-                            Pesanan Saya
+                          <button className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3">
+                            <FontAwesomeIcon
+                              icon={faBox}
+                              className="text-gray-500 w-4 h-4"
+                            />
+                            <span>Pesanan Saya</span>
                           </button>
                         </Link>
                         <Link href="/settings">
-                          <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <FontAwesomeIcon icon={faCog} />
-                            Pengaturan
+                          <button className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3">
+                            <FontAwesomeIcon
+                              icon={faCog}
+                              className="text-gray-500 w-4 h-4"
+                            />
+                            <span>Pengaturan</span>
                           </button>
                         </Link>
+                      </div>
+
+                      {/* Logout */}
+                      <div className="border-t border-gray-200 pt-1">
                         <button
-                          onClick={() => signOut({ callbackUrl: "/" })}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => signOut()}
+                          className="w-full px-4 py-3 text-left text-sm text-red-500 hover:bg-gray-100 flex items-center gap-3"
                         >
-                          <FontAwesomeIcon icon={faSignOutAlt} />
-                          Logout
+                          <FontAwesomeIcon
+                            icon={faSignOutAlt}
+                            className="w-4 h-4"
+                          />
+                          <span>Logout</span>
                         </button>
                       </div>
-                    )}
-                  </div>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setIsLoginOpen(true)}
-                      className="px-4 py-1.5 text-sm text-blue-500 border border-blue-500 rounded-lg font-medium hover:bg-blue-50"
-                    >
-                      Masuk
-                    </button>
-                    <Link href="/register">
-                      <button className="px-4 py-1.5 text-sm text-white bg-blue-500 rounded-lg font-medium hover:bg-blue-600">
-                        Daftar
+                    </>
+                  ) : (
+                    <div className="border-t border-gray-200 pt-1">
+                      {/* Login */}
+                      <button
+                        onClick={() => {
+                          setIsLoginOpen(true);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left text-sm text-blue-500 hover:bg-blue-50 flex items-center gap-3"
+                      >
+                        <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
+                        <span>Masuk</span>
                       </button>
-                    </Link>
-                  </>
-                )}
+
+                      {/* Register */}
+                      <Link href="/register">
+                        <button className="w-full px-4 py-3 text-left text-sm text-white bg-blue-500 hover:bg-blue-600 flex items-center gap-3 mt-1">
+                          <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
+                          <span>Daftar</span>
+                        </button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
+        {/* Bottom Section */}
         <div className="w-full border-b border-gray-200 py-2 pl-52">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between">
@@ -175,6 +322,7 @@ const Navbar = () => {
         </div>
       </header>
 
+      {/* Kategori Dropdown */}
       <div
         className={`fixed w-full h-90 bg-white shadow-lg z-40 transition-all duration-700 ease-in-out overflow-hidden ${
           showKategori ? "opacity-100 max-h-90" : "opacity-0 max-h-0"
