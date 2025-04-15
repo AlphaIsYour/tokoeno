@@ -2,6 +2,7 @@
 import "./style.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface Product {
   id: string;
@@ -82,9 +83,11 @@ const Produk = () => {
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => router.push(`/produk/${produk.slug}`)}
             >
-              <img
+              <Image
                 src={produk.images[0]?.url || "/img/default.jpg"}
                 alt={produk.name}
+                width={200}
+                height={200}
                 className="w-full h-50 object-cover rounded-t-xl"
               />
               <div className="p-3">

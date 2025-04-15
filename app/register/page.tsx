@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -41,10 +41,10 @@ const RegisterPage = () => {
     setIsLoading(true);
     setError("");
     try {
-      // Simulasi API call (ganti dengan endpoint verifikasi email nanti)
+      // Simulasi API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setStep("confirm");
-    } catch (err) {
+    } catch {
       setError("Gagal mengirim email. Coba lagi.");
     } finally {
       setIsLoading(false);
@@ -59,16 +59,15 @@ const RegisterPage = () => {
     setIsLoading(true);
     setError("");
     try {
-      // Simulasi verifikasi kode (ganti dengan API call)
+      // Simulasi verifikasi kode
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      // Simpan user ke database
       await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, role: "USER" }),
       });
-      router.push("/login"); // Redirect ke login
-    } catch (err) {
+      router.push("/login");
+    } catch {
       setError("Kode salah. Coba lagi.");
     } finally {
       setIsLoading(false);
