@@ -1,5 +1,5 @@
-// app/components/Slider/index.tsx
 "use client";
+
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,7 +21,7 @@ interface Event {
 // Skeleton Loading
 const SkeletonSlider = () => {
   return (
-    <div className="slider-container relative w-335 mx-auto h-80 bg-gray-200 animate-shimmer rounded-xl overflow-hidden">
+    <div className="slider-container relative w-full sm:w-335 mx-auto h-48 sm:h-80 bg-gray-200 animate-shimmer rounded-xl overflow-hidden">
       <div className="w-full h-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer"></div>
     </div>
   );
@@ -106,7 +106,7 @@ const Slider = () => {
 
   return (
     <div
-      className="slider-container relative w-335 mx-auto h-80 bg-white rounded-xl flex items-center justify-center overflow-hidden"
+      className="slider-container relative w-full sm:w-335 mx-auto h-48 sm:h-80 bg-white rounded-xl flex items-center justify-center overflow-hidden"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
@@ -126,7 +126,7 @@ const Slider = () => {
             src={image}
             width={800}
             height={400}
-            className="w-full h-80 object-cover flex-shrink-0"
+            className="w-full h-48 sm:h-80 object-cover flex-shrink-0"
             alt={`Slide ${index}`}
           />
         ))}
@@ -134,7 +134,7 @@ const Slider = () => {
 
       {/* Tombol Navigasi */}
       <button
-        className={`absolute left-3 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md transition-all duration-300 ${
+        className={`absolute left-3 top-1/2 transform -translate-y-1/2 bg-white p-2 sm:p-3 rounded-full shadow-md transition-all duration-300 ${
           isHovering ? "opacity-100 -translate-x-0" : "opacity-0 translate-x-10"
         } hover:bg-gray-200`}
         onClick={prevSlide}
@@ -143,7 +143,7 @@ const Slider = () => {
       </button>
 
       <button
-        className={`absolute right-3 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md transition-all duration-300 ${
+        className={`absolute right-3 top-1/2 transform -translate-y-1/2 bg-white p-2 sm:p-3 rounded-full shadow-md transition-all duration-300 ${
           isHovering ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
         } hover:bg-gray-200`}
         onClick={nextSlide}
@@ -152,11 +152,11 @@ const Slider = () => {
       </button>
 
       {/* Indikator */}
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 sm:gap-2">
         {images.map((_, index) => (
           <div
             key={index}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 ${
               index === (currentIndex - 1) % images.length
                 ? "bg-white scale-125"
                 : "bg-gray-400"
