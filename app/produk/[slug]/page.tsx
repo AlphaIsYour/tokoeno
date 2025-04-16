@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import "./style.css";
 import {
   FaHeart,
   FaShareAlt,
@@ -213,15 +214,15 @@ export default function ProdukDetail() {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto p-5 mt-30">
+      <div className="max-w-6xl mx-auto p-5 mt-custom">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Image Column */}
           <div className="lg:sticky lg:top-20 self-start">
-            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
+            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative ">
               <Image
                 src={selectedImage}
                 alt={`Gambar Utama ${produk.name}`}
-                fill // Ganti width/height statis
+                fill
                 className="object-cover transition-opacity duration-300"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority

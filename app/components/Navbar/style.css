@@ -36,3 +36,18 @@
 .mobile-menu {
   animation: slideDown 0.2s ease-out;
 }
+
+.custom {
+  padding-left: 80px;
+}
+
+@media (max-width: 640px) {
+  .custom {
+    padding-left: 0px;
+    margin-left: -80px;
+    width: 640px;
+  }
+  .none {
+    display: none;
+  }
+}

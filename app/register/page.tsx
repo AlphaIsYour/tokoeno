@@ -91,7 +91,7 @@ const RegisterPage = () => {
               </h2>
               <p className="text-center text-gray-500 text-sm">
                 Sudah punya akun?{" "}
-                <a href="/login" className="text-green-500 cursor-pointer">
+                <a href="/login" className="text-blue-500 cursor-pointer">
                   Masuk
                 </a>
               </p>
@@ -117,7 +117,7 @@ const RegisterPage = () => {
               <input
                 type="email"
                 placeholder="Masukkan E-mail"
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 value={email}
                 onChange={handleChange}
               />
@@ -126,7 +126,7 @@ const RegisterPage = () => {
                 className={`w-full mt-4 p-2 rounded-lg text-white ${
                   isButtonDisabled
                     ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-green-500 hover:bg-green-600"
+                    : "bg-blue-500 hover:bg-blue-600"
                 } flex items-center justify-center`}
                 disabled={isButtonDisabled || isLoading}
                 onClick={handleRegister}
@@ -161,11 +161,11 @@ const RegisterPage = () => {
               </button>
               <p className="text-xs text-gray-500 text-center mt-4">
                 Dengan mendaftar, saya menyetujui{" "}
-                <a href="/terms" className="text-green-500 cursor-pointer">
+                <a href="/terms" className="text-blue-500 cursor-pointer">
                   Syarat & Ketentuan
                 </a>{" "}
                 serta{" "}
-                <a href="/privacy" className="text-green-500 cursor-pointer">
+                <a href="/privacy" className="text-blue-500 cursor-pointer">
                   Kebijakan Privasi
                 </a>
                 .
@@ -193,7 +193,7 @@ const RegisterPage = () => {
                   Ubah
                 </button>
                 <button
-                  className="w-30 p-2 rounded-lg text-white bg-green-500 hover:bg-green-600"
+                  className="w-30 p-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600"
                   onClick={handleConfirm}
                   disabled={isLoading}
                 >
@@ -214,13 +214,13 @@ const RegisterPage = () => {
               <input
                 type="text"
                 placeholder="Masukkan kode"
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 mt-4"
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 mt-4"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
               />
               {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               <button
-                className="w-full mt-4 p-2 rounded-lg text-white bg-green-500 hover:bg-green-600"
+                className="w-full mt-4 p-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600"
                 onClick={handleVerify}
                 disabled={isLoading || !verificationCode.trim()}
               >

@@ -2,10 +2,62 @@
   box-shadow: 2px 2px 6px 2px rgba(0, 0, 0, 0.1);
 }
 
+.category-section {
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.featured-categories::-webkit-scrollbar {
+  height: 4px;
+}
+
+.featured-categories::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.featured-categories::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.category-pills::-webkit-scrollbar {
+  height: 4px;
+}
+
+.category-pills::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.category-pills::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
 /* Mobile Styles */
 @media (max-width: 640px) {
   .category {
     box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     border-radius: 0.5rem; /* Smaller radius */
   }
+
+  .category-image-container {
+    width: 72px;
+    height: 72px;
+  }
+
+  .category-section {
+    padding: 16px;
+  }
+}
+
+.bg-custom {
+  background-color: #f9fcff;
+  background-image: linear-gradient(
+      rgba(214, 230, 255, 0.3) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(214, 230, 255, 0.3) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }

@@ -13,3 +13,13 @@
     background-position: -200% 0;
   }
 }
+
+.mt-custom {
+  margin-top: 120px;
+}
+
+@media (max-width: 640px) {
+  .mt-custom {
+    margin-top: 165px;
+  }
+}

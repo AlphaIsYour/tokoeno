@@ -292,17 +292,17 @@ const Navbar = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="w-full border-b border-gray-200 py-2 pl-52">
+        <div className="w-full border-b border-gray-200 py-2 custom">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between">
               <div className="flex flex-1 gap-4 overflow-x-auto whitespace-nowrap text-xs text-gray-600 ml-6">
-                <span>Monitor LED</span>
-                <span>Keyboard Mekanikal</span>
-                <span>Motherboard</span>
-                <span>RAM 8GB</span>
-                <span>Power Supply</span>
-                <span>HP Bekas</span>
-                <div className="flex items-center text-gray-600 ml-1 pl-135">
+                <span className="none">Monitor LED</span>
+                <span className="none">Keyboard Mekanikal</span>
+                <span className="none">Motherboard</span>
+                <span className="none">RAM 8GB</span>
+                <span className="none">Power Supply</span>
+                <span className="none">HP Bekas</span>
+                <div className="flex items-center text-gray-600 ml-1 pl-98">
                   <FontAwesomeIcon
                     icon={faLocationDot}
                     className="text-xs mr-1"
@@ -324,7 +324,7 @@ const Navbar = () => {
 
       {/* Kategori Dropdown */}
       <div
-        className={`fixed w-full h-90 bg-white shadow-lg z-40 transition-all duration-700 ease-in-out overflow-hidden ${
+        className={`fixed w-full h-90 bg-white shadow-lg z-40 transition-all duration-700 ease-in-out overflow-hidden mt-10 ${
           showKategori ? "opacity-100 max-h-90" : "opacity-0 max-h-0"
         }`}
         style={{ top: "97px" }}
