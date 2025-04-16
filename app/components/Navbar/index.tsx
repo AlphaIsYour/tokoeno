@@ -219,7 +219,7 @@ const Navbar = () => {
                     <>
                       {/* Profile Menu - Mirip dengan desktop */}
                       <div className="border-t border-gray-200 pt-1">
-                        <Link href="/profile/edit">
+                        <Link href="/profile">
                           <button className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3">
                             <FontAwesomeIcon
                               icon={faEdit}
@@ -324,7 +324,7 @@ const Navbar = () => {
 
       {/* Kategori Dropdown */}
       <div
-        className={`fixed w-full h-90 bg-white shadow-lg z-40 transition-all duration-700 ease-in-out overflow-hidden mt-10 ${
+        className={`fixed w-full h-90 bg-white shadow-lg z-40 transition-all duration-700 ease-in-out overflow-hidden mt-custom ${
           showKategori ? "opacity-100 max-h-90" : "opacity-0 max-h-0"
         }`}
         style={{ top: "97px" }}
@@ -335,8 +335,8 @@ const Navbar = () => {
           className={`${grotesk.className} max-w-7xl mx-auto px-8 py-6 grid grid-cols-5 gap-6`}
         >
           <div>
-            <h3 className="font-medium text-gray-800 mb-3">Elektronik</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <h3 className="font-xs text-gray-800 mb-3">Elektronik</h3>
+            <ul className="space-y-2 text-xs text-gray-600">
               <li className="hover:text-blue-500 cursor-pointer">Audio</li>
               <li className="hover:text-blue-500 cursor-pointer">Kamera</li>
               <li className="hover:text-blue-500 cursor-pointer">
@@ -346,8 +346,8 @@ const Navbar = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800 mb-3">Komputer</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <h3 className="font-xs text-gray-800 mb-3">Komputer</h3>
+            <ul className="space-y-2 text-xs text-gray-600">
               <li className="hover:text-blue-500 cursor-pointer">Laptop</li>
               <li className="hover:text-blue-500 cursor-pointer">
                 PC & Desktop
@@ -360,8 +360,8 @@ const Navbar = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800 mb-3">Handphone</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <h3 className="font-xs text-gray-800 mb-3">Handphone</h3>
+            <ul className="space-y-2 text-xs text-gray-600">
               <li className="hover:text-blue-500 cursor-pointer">Smartphone</li>
               <li className="hover:text-blue-500 cursor-pointer">Tablet</li>
               <li className="hover:text-blue-500 cursor-pointer">
@@ -371,8 +371,8 @@ const Navbar = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800 mb-3">Fashion Pria</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <h3 className="font-xs text-gray-800 mb-3 ml-1">Fashion Pria</h3>
+            <ul className="space-y-2 text-xs text-gray-600">
               <li className="hover:text-blue-500 cursor-pointer">Pakaian</li>
               <li className="hover:text-blue-500 cursor-pointer">Sepatu</li>
               <li className="hover:text-blue-500 cursor-pointer">Jam Tangan</li>
@@ -382,8 +382,8 @@ const Navbar = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800 mb-3">Fashion Wanita</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <h3 className="font-xs text-gray-800 mb-3">Fashion Wanita</h3>
+            <ul className="space-y-2 text-xs text-gray-600">
               <li className="hover:text-blue-500 cursor-pointer">Pakaian</li>
               <li className="hover:text-blue-500 cursor-pointer">Sepatu</li>
               <li className="hover:text-blue-500 cursor-pointer">Tas</li>
