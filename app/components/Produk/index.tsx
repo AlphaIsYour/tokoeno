@@ -18,8 +18,8 @@ interface Product {
 const SkeletonCard = () => {
   return (
     <div className="bg-white rounded-xl shadow-md">
-      <div className="w-full h-50 bg-gray-200 animate-shimmer rounded-t-xl"></div>
-      <div className="p-3">
+      <div className="w-full h-32 sm:h-50 bg-gray-200 animate-shimmer rounded-t-xl"></div>
+      <div className="p-2 sm:p-3">
         <div className="h-4 bg-gray-200 animate-shimmer rounded w-3/4 mb-2"></div>
         <div className="h-4 bg-gray-200 animate-shimmer rounded w-1/2"></div>
       </div>
@@ -55,13 +55,13 @@ const Produk = () => {
   }, []);
 
   return (
-    <div className="w-full mx-auto p-5 mt-5">
+    <div className="w-full mx-auto p-3 sm:p-5 mt-5">
       <div className="bg-white w-full p-2">
-        <h1 className="text-xl font-bold">Rekomendasi :</h1>
+        <h1 className="text-lg sm:text-xl font-bold">Rekomendasi :</h1>
       </div>
 
       {loading && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4 mt-4">
           {/* Tampilkan 6 skeleton card sebagai placeholder */}
           {Array(6)
             .fill(0)
@@ -76,7 +76,7 @@ const Produk = () => {
       )}
 
       {!loading && products.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4 mt-4">
           {products.map((produk) => (
             <div
               key={produk.slug}
@@ -88,16 +88,18 @@ const Produk = () => {
                 alt={produk.name}
                 width={200}
                 height={200}
-                className="w-full h-50 object-cover rounded-t-xl"
+                className="w-full h-32 sm:h-50 object-cover rounded-t-xl"
               />
-              <div className="p-3">
-                <h2 className="text-sm font-semibold truncate">
+              <div className="p-2 sm:p-3">
+                <h2 className="text-xs sm:text-sm font-semibold truncate">
                   {produk.name}
                 </h2>
-                <p className="text-red-500 text-sm font-bold mt-1">
+                <p className="text-red-500 text-xs sm:text-sm font-bold mt-1">
                   Rp {produk.price.toLocaleString()}
                 </p>
-                <p className="text-gray-500 text-xs mt-1">Toko Official</p>
+                <p className="text-gray-500 text-2xs sm:text-xs mt-1">
+                  Toko Official
+                </p>
               </div>
             </div>
           ))}
