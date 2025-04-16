@@ -41,17 +41,17 @@ interface User {
 }
 
 const dummyUser: User = {
-  name: "John Doe",
+  name: "Youralpha",
   bio: "Tech enthusiast, gamer, and coffee lover. Building cool stuff at TOKOENO!",
   location: "Malang, Indonesia",
   joinDate: "April 2023",
   profilePic: "/img/r12.jpg",
   coverPic: "/img/r10.jpg",
   social: {
-    twitter: "https://twitter.com/johndoe",
-    instagram: "https://instagram.com/johndoe",
-    github: "https://github.com/johndoe",
-    linkedin: "https://linkedin.com/in/johndoe",
+    twitter: "https://twitter.com/yrlpha",
+    instagram: "https://instagram.com/eno4lph_",
+    github: "https://github.com/AlphaIsYour",
+    linkedin: "https://linkedin.com/in/alphareno-yanuar-syaputra",
   },
   orders: 42,
   reviews: 15,
@@ -194,7 +194,7 @@ const Profile = () => {
             }`}
           >
             {user.name}
-            <span className="ml-2 text-gray-500 text-lg">@johndoe</span>
+            <span className="ml-2 text-gray-500 text-lg">@yoralph</span>
           </h1>
           <div className="flex justify-center gap-4">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
