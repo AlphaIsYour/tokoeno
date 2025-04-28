@@ -1,6 +1,6 @@
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -8,31 +8,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-  SELLER
-}
-
 model User {
-  id        String   @id @default(uuid())
-  name      String?
-  email     String   @unique
-  image     String?
-  role      Role     @default(USER)
-  provider  String?
-  providerId String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  accounts  Account[]
-  sessions  Session[] // Tambah relasi ke Session
-  stores    Store[]  @relation("StoreOwner")
-  reviews   Review[] @relation("UserReviews")
-  orders    Order[]  @relation("UserOrders")
+  id          String            @id @default(uuid())
+  name        String?
+  email       String            @unique
+  provider    String?
+  providerId  String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  role        Role              @default(USER)
+  image       String?
+  bio         String?
+  location    String?           @db.VarChar(255)
+  join_date   DateTime?         @default(now()) @db.Timestamp(6)
+  cover_pic   String?           @db.VarChar(255)
+  username    String?           @unique @db.VarChar(100)
+  accounts    Account[]
+  orders      Order[]           @relation("UserOrders")
+  pinnedItems PinnedItems[]
+  reviews     Review[]          @relation("UserReviews")
+  sessions    Session[]
+  stores      Store[]           @relation("StoreOwner")
+  preferences UserPreferences?
+  socialLinks UserSocialLinks[]
 }
 
 model Account {
-  id                String   @id @default(uuid())
+  id                String  @id @default(uuid())
   userId            String
   provider          String
   providerAccountId String
@@ -43,7 +45,8 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
@@ -56,55 +59,56 @@ model Session {
 }
 
 model Store {
-  id          Int        @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
-  slug        String     @unique
+  slug        String    @unique
   logo        String?
   description String?
   location    String?
   ownerId     String
-  owner       User       @relation("StoreOwner", fields: [ownerId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isApproved  Boolean   @default(false)
   products    Product[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  isApproved  Boolean    @default(false)
+  owner       User      @relation("StoreOwner", fields: [ownerId], references: [id])
 }
 
 model Product {
-  id          Int           @id @default(autoincrement())
   name        String
   price       Int
   stock       Int
-  slug        String        @unique
+  createdAt   DateTime       @default(now())
   description String?
+  slug        String         @unique
+  id          Int            @id @default(autoincrement())
   storeId     Int?
-  store       Store?        @relation(fields: [storeId], references: [id])
+  updatedAt   DateTime?      @updatedAt
+  orders      OrderItem[]
+  pinnedBy    PinnedItems[]
+  store       Store?         @relation(fields: [storeId], references: [id])
   images      ProductImage[]
   reviews     Review[]
-  orders      OrderItem[]
-  categories  Category[]    @relation("ProductCategories")
   trending    Trending?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime?     @updatedAt
+  categories  Category[]     @relation("ProductCategories")
 }
 
 model ProductImage {
-  id        Int      @id @default(autoincrement())
   url       String
+  id        Int     @id @default(autoincrement())
   productId Int
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Review {
   id        Int      @id @default(autoincrement())
   userId    String
-  user      User     @relation("UserReviews", fields: [userId], references: [id])
   productId Int
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   rating    Int
   comment   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserReviews", fields: [userId], references: [id])
 }
 
 model Event {
@@ -122,38 +126,88 @@ model Category {
   id        Int       @id @default(autoincrement())
   name      String    @unique
   slug      String    @unique
-  products  Product[] @relation("ProductCategories")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  products  Product[] @relation("ProductCategories")
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  userId      String
-  user        User        @relation("UserOrders", fields: [userId], references: [id])
-  total       Int
-  status      String      @default("PENDING")
-  orderItems  OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id         Int         @id @default(autoincrement())
+  userId     String
+  total      Int
+  status     String      @default("PENDING")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  user       User        @relation("UserOrders", fields: [userId], references: [id])
+  orderItems OrderItem[]
 }
 
 model OrderItem {
   id        Int      @id @default(autoincrement())
   orderId   Int
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId Int
-  product   Product  @relation(fields: [productId], references: [id])
   quantity  Int
   price     Int
   createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Trending {
   id        Int      @id @default(autoincrement())
   productId Int      @unique
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   rank      Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model UserSocialLinks {
+  id         Int       @id @default(autoincrement())
+  user_id    String
+  platform   String    @db.VarChar(50)
+  url        String    @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @updatedAt @db.Timestamp(6)
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, platform])
+  @@index([user_id], map: "idx_user_social_links_user_id")
+  @@map("UserSocialLinks")
+}
+
+model PinnedItems {
+  id         Int       @id @default(autoincrement())
+  user_id    String
+  product_id Int?
+  name       String    @db.VarChar(255)
+  image      String?   @db.VarChar(255)
+  position   Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+  product    Product?  @relation(fields: [product_id], references: [id], onUpdate: NoAction)
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_pinned_items_user_id")
+  @@map("PinnedItems")
+}
+
+model UserPreferences {
+  id                  Int       @id @default(autoincrement())
+  user_id             String    @unique
+  dark_mode           Boolean?  @default(false)
+  email_notifications Boolean?  @default(true)
+  profile_privacy     Boolean?  @default(false)
+  created_at          DateTime? @default(now()) @db.Timestamp(6)
+  updated_at          DateTime? @default(now()) @updatedAt @db.Timestamp(6)
+  user                User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_user_preferences_user_id")
+  @@map("UserPreferences")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SELLER
 }

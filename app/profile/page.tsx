@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import "./style.css";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 // Replace Font Awesome with more compatible icons
 import {
@@ -23,12 +25,16 @@ import {
 } from "react-icons/fa";
 
 interface User {
+  id: string;
   name: string;
-  bio: string;
-  location: string;
-  joinDate: string;
-  profilePic: string;
-  coverPic: string;
+  email: string;
+  bio: string | null;
+  location: string | null;
+  join_date: string;
+  image: string | null;
+  cover_pic: string | null;
+  username: string | null;
+  role: string;
   social: {
     twitter?: string;
     instagram?: string;
@@ -40,41 +46,193 @@ interface User {
   pinnedItems: { id: string; name: string; image: string }[];
 }
 
-const dummyUser: User = {
-  name: "Youralpha",
-  bio: "Tech enthusiast, gamer, and coffee lover. Building cool stuff at TOKOENO!",
-  location: "Malang, Indonesia",
-  joinDate: "April 2023",
-  profilePic: "/img/r12.jpg",
-  coverPic: "/img/r10.jpg",
+// Fallback default user data - making sure all fields from User interface are provided
+const defaultUser: User = {
+  id: "",
+  name: "User",
+  email: "",
+  bio: null,
+  location: null,
+  join_date: new Date().toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "long",
+  }),
+  image: "/img/r12.jpg",
+  cover_pic: "/img/r10.jpg",
+  username: null,
+  role: "user",
   social: {
-    twitter: "https://twitter.com/yrlpha",
-    instagram: "https://instagram.com/eno4lph_",
-    github: "https://github.com/AlphaIsYour",
-    linkedin: "https://linkedin.com/in/alphareno-yanuar-syaputra",
+    twitter: "",
+    instagram: "",
+    github: "",
+    linkedin: "",
   },
-  orders: 42,
-  reviews: 15,
-  pinnedItems: [
-    { id: "1", name: "Monitor LED 27'", image: "/img/r7.jpg" },
-    { id: "2", name: "Keyboard Mekanikal", image: "/img/r11.jpg" },
-    { id: "3", name: "Mouse Gaming", image: "/img/r9.jpg" },
-  ],
+  orders: 0,
+  reviews: 0,
+  pinnedItems: [],
 };
 
 const Profile = () => {
+  const { data: session, status } = useSession();
   const [activeTab, setActiveTab] = useState<"profile" | "social" | "settings">(
     "profile"
   );
   const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useState<User>(dummyUser);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [privateProfile, setPrivateProfile] = useState(false);
+
+  // Fetch user data when component mounts or session changes
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (status === "authenticated" && session?.user?.email) {
+        try {
+          setLoading(true);
+          const response = await axios.get(
+            `/api/user?email=${session.user.email}`
+          );
+
+          // Check if we got data or if this is a new user
+          const userData = response.data;
+          const isNewUser = !userData || Object.keys(userData).length === 0;
+
+          if (isNewUser) {
+            // For new users, create a default profile with session data
+            const newUserData: User = {
+              ...defaultUser,
+              id: session.user.id || "",
+              name: session.user.name || "User",
+              email: session.user.email,
+              image: session.user.image || defaultUser.image,
+            };
+            setUser(newUserData);
+          } else {
+            // For existing users, merge the database user with default values
+            setUser({
+              ...defaultUser, // Provide defaults for any missing fields
+              ...userData,
+              // Format join date if available
+              join_date: userData.join_date
+                ? new Date(userData.join_date).toLocaleDateString("id-ID", {
+                    year: "numeric",
+                    month: "long",
+                  })
+                : defaultUser.join_date,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+          // Fall back to session data with default values
+          setUser({
+            ...defaultUser,
+            id: session.user.id || "",
+            name: session.user.name || "User",
+            email: session.user.email,
+            image: session.user.image || defaultUser.image,
+          });
+        } finally {
+          setLoading(false);
+        }
+      } else if (status === "unauthenticated") {
+        // Redirect to login if not authenticated
+        window.location.href = "/login";
+      }
+    };
+
+    fetchUserData();
+  }, [session, status]);
+
+  // Fetch user preferences
+  useEffect(() => {
+    const fetchUserPreferences = async () => {
+      if (status === "authenticated") {
+        try {
+          const response = await axios.get("/api/user/preferences");
+          if (response.data) {
+            setDarkMode(response.data.darkMode || false);
+            setEmailNotifications(response.data.emailNotifications || true);
+            setPrivateProfile(response.data.privateProfile || false);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user preferences:", error);
+          // Use defaults if preferences can't be fetched
+        }
+      }
+    };
+
+    fetchUserPreferences();
+  }, [status]);
 
   const handleEdit = () => setIsEditing(true);
-  const handleSave = () => setIsEditing(false);
-  const toggleDarkMode = () => setDarkMode(!darkMode);
+
+  const handleSave = async () => {
+    if (!user) return;
+
+    try {
+      await axios.put(`/api/user/${user.id}`, {
+        name: user.name,
+        bio: user.bio,
+        location: user.location,
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update user data:", error);
+      alert("Failed to save changes. Please try again.");
+    }
+  };
+
+  const toggleDarkMode = async () => {
+    const newValue = !darkMode;
+    setDarkMode(newValue);
+    try {
+      await axios.put("/api/user/preferences", {
+        darkMode: newValue,
+      });
+    } catch (error) {
+      console.error("Failed to update dark mode preference:", error);
+    }
+  };
+
+  const toggleEmailNotifications = async () => {
+    const newValue = !emailNotifications;
+    setEmailNotifications(newValue);
+    try {
+      await axios.put("/api/user/preferences", {
+        emailNotifications: newValue,
+      });
+    } catch (error) {
+      console.error("Failed to update email notifications preference:", error);
+    }
+  };
+
+  const togglePrivateProfile = async () => {
+    const newValue = !privateProfile;
+    setPrivateProfile(newValue);
+    try {
+      await axios.put("/api/user/preferences", {
+        privateProfile: newValue,
+      });
+    } catch (error) {
+      console.error("Failed to update private profile preference:", error);
+    }
+  };
+
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+  // Show loading state while fetching data
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-100">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   const StatCard = ({
     icon,
@@ -141,7 +299,7 @@ const Profile = () => {
       <div className="relative h-64 sm:h-96 w-full bg-gradient-to-r from-blue-500 to-purple-600 mt-28">
         <div className="relative h-full w-full">
           <Image
-            src={user.coverPic || "/img/r10.jpg"}
+            src={user.cover_pic || "/img/r10.jpg"}
             alt="Cover"
             fill
             sizes="100vw"
@@ -150,7 +308,6 @@ const Profile = () => {
             priority
           />
         </div>
-        {/* <div className="absolute inset-0 bg-black bg-opacity-30" /> */}
         <div className="absolute bottom-4 right-4 flex gap-2">
           <button className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-white/30">
             <FaCamera />
@@ -167,7 +324,7 @@ const Profile = () => {
         >
           <div className="relative h-full w-full">
             <Image
-              src={user.profilePic || "/img/r12.jpg"}
+              src={"/img/r12.jpg"}
               alt="Profile"
               fill
               sizes="(max-width: 768px) 8rem, 12rem"
@@ -194,7 +351,9 @@ const Profile = () => {
             }`}
           >
             {user.name}
-            <span className="ml-2 text-gray-500 text-lg">@yoralph</span>
+            <span className="ml-2 text-gray-500 text-lg">
+              @{user.username || "user"}
+            </span>
           </h1>
           <div className="flex justify-center gap-4">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
@@ -256,8 +415,7 @@ const Profile = () => {
                       : "text-gray-700"
                   }`}
                   onClick={() => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    setActiveTab(tab as any);
+                    setActiveTab(tab as "profile" | "social" | "settings");
                     setIsMobileMenuOpen(false);
                   }}
                 >
@@ -282,8 +440,9 @@ const Profile = () => {
                   ? "text-gray-300 hover:text-blue-400"
                   : "text-gray-500 hover:text-blue-500"
               }`}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onClick={() => setActiveTab(tab as any)}
+              onClick={() =>
+                setActiveTab(tab as "profile" | "social" | "settings")
+              }
             >
               {tab === "profile" && "Profil"}
               {tab === "social" && "Sosial Media"}
@@ -320,7 +479,7 @@ const Profile = () => {
                 <StatCard
                   icon={<FaClock className="w-5 h-5" />}
                   title="Bergabung"
-                  value={user.joinDate}
+                  value={user.join_date}
                   color="purple"
                 />
               </div>
@@ -332,33 +491,39 @@ const Profile = () => {
               >
                 <h3 className="text-lg font-semibold mb-4">Pinned Items</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {user.pinnedItems.map((item) => (
-                    <motion.div
-                      key={item.id}
-                      className="group relative overflow-hidden rounded-lg h-32"
-                      whileHover={{ scale: 1.02 }}
-                    >
-                      <div className="relative h-full w-full">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          style={{ objectFit: "cover" }}
-                          className="rounded-lg"
-                        />
-                      </div>
-                      <div
-                        className={`absolute inset-0 bg-gradient-to-t ${
-                          darkMode
-                            ? "from-gray-900/80 to-transparent"
-                            : "from-gray-900/50 to-transparent"
-                        } flex items-end p-3`}
+                  {user.pinnedItems && user.pinnedItems.length > 0 ? (
+                    user.pinnedItems.map((item) => (
+                      <motion.div
+                        key={item.id}
+                        className="group relative overflow-hidden rounded-lg h-32"
+                        whileHover={{ scale: 1.02 }}
                       >
-                        <p className="text-white font-medium">{item.name}</p>
-                      </div>
-                    </motion.div>
-                  ))}
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            style={{ objectFit: "cover" }}
+                            className="rounded-lg"
+                          />
+                        </div>
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-t ${
+                            darkMode
+                              ? "from-gray-900/80 to-transparent"
+                              : "from-gray-900/50 to-transparent"
+                          } flex items-end p-3`}
+                        >
+                          <p className="text-white font-medium">{item.name}</p>
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="col-span-3 text-center p-8 text-gray-500">
+                      <p>Belum ada item yang disematkan</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -374,7 +539,9 @@ const Profile = () => {
                   />
                   <div>
                     <h4 className="font-medium">Lokasi</h4>
-                    <p className="text-gray-500">{user.location}</p>
+                    <p className="text-gray-500">
+                      {user.location || "Tidak ditentukan"}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -383,7 +550,9 @@ const Profile = () => {
                   />
                   <div>
                     <h4 className="font-medium">Bio</h4>
-                    <p className="text-gray-500">{user.bio}</p>
+                    <p className="text-gray-500">
+                      {user.bio || "Belum ada bio"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -393,59 +562,65 @@ const Profile = () => {
           {activeTab === "social" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(user.social).map(([platform, url]) => {
-                  // Choose icon based on platform
-                  let icon;
-                  switch (platform) {
-                    case "twitter":
-                      icon = <FaTwitter />;
-                      break;
-                    case "instagram":
-                      icon = <FaInstagram />;
-                      break;
-                    case "github":
-                      icon = <FaGithub />;
-                      break;
-                    case "linkedin":
-                      icon = <FaLinkedin />;
-                      break;
-                    default:
-                      icon = <FaLink />;
-                  }
+                {user.social && Object.entries(user.social).length > 0 ? (
+                  Object.entries(user.social).map(([platform, url]) => {
+                    // Choose icon based on platform
+                    let icon;
+                    switch (platform) {
+                      case "twitter":
+                        icon = <FaTwitter />;
+                        break;
+                      case "instagram":
+                        icon = <FaInstagram />;
+                        break;
+                      case "github":
+                        icon = <FaGithub />;
+                        break;
+                      case "linkedin":
+                        icon = <FaLinkedin />;
+                        break;
+                      default:
+                        icon = <FaLink />;
+                    }
 
-                  return (
-                    <div
-                      key={platform}
-                      className={`flex items-center justify-between p-4 border rounded-lg ${
-                        darkMode ? "border-gray-700" : "border-gray-200"
-                      } hover:border-blue-500 transition-colors`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="text-gray-500">{icon}</div>
-                        <div>
-                          <h4
-                            className={`font-medium ${
-                              darkMode ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {platform.charAt(0).toUpperCase() +
-                              platform.slice(1)}
-                          </h4>
-                          <p className="text-sm text-gray-500">{url}</p>
-                        </div>
-                      </div>
-                      <button
-                        className={`px-3 py-1 rounded-md text-sm ${
-                          url
-                            ? "bg-green-100 text-green-800"
-                            : "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                        }`}
+                    return (
+                      <div
+                        key={platform}
+                        className={`flex items-center justify-between p-4 border rounded-lg ${
+                          darkMode ? "border-gray-700" : "border-gray-200"
+                        } hover:border-blue-500 transition-colors`}
                       >
-                        {url ? "Terhubung" : "Hubungkan"}
-                      </button>
-                    </div>
-                  );
-                })}
+                        <div className="flex items-center gap-3">
+                          <div className="text-gray-500">{icon}</div>
+                          <div>
+                            <h4
+                              className={`font-medium ${
+                                darkMode ? "text-white" : "text-gray-900"
+                              }`}
+                            >
+                              {platform.charAt(0).toUpperCase() +
+                                platform.slice(1)}
+                            </h4>
+                            <p className="text-sm text-gray-500">{url}</p>
+                          </div>
+                        </div>
+                        <button
+                          className={`px-3 py-1 rounded-md text-sm ${
+                            url
+                              ? "bg-green-100 text-green-800"
+                              : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                          }`}
+                        >
+                          {url ? "Terhubung" : "Hubungkan"}
+                        </button>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="col-span-2 text-center p-8 text-gray-500">
+                    <p>Belum ada sosial media yang terhubung</p>
+                  </div>
+                )}
               </div>
 
               <div
@@ -500,7 +675,7 @@ const Profile = () => {
                       Bio
                     </label>
                     <textarea
-                      value={user.bio}
+                      value={user.bio || ""}
                       onChange={(e) =>
                         setUser({ ...user, bio: e.target.value })
                       }
@@ -518,7 +693,7 @@ const Profile = () => {
                     </label>
                     <input
                       type="text"
-                      value={user.location}
+                      value={user.location || ""}
                       onChange={(e) =>
                         setUser({ ...user, location: e.target.value })
                       }
@@ -542,7 +717,50 @@ const Profile = () => {
                       }`}
                       onClick={() => {
                         setIsEditing(false);
-                        setUser(dummyUser); // Reset changes
+                        // Reset changes by fetching fresh data
+                        const fetchUserData = async () => {
+                          try {
+                            const response = await axios.get(
+                              `/api/user?email=${session?.user?.email}`
+                            );
+
+                            // Check if we got data or if this is a new user
+                            const userData = response.data;
+                            const isNewUser =
+                              !userData || Object.keys(userData).length === 0;
+
+                            if (isNewUser) {
+                              // For new users, create a default profile with session data
+                              const newUserData: User = {
+                                ...defaultUser,
+                                id: session?.user?.id || "",
+                                name: session?.user?.name || "User",
+                                email: session?.user?.email || "",
+                                image:
+                                  session?.user?.image || defaultUser.image,
+                              };
+                              setUser(newUserData);
+                            } else {
+                              // For existing users, merge database data with defaults
+                              setUser({
+                                ...defaultUser,
+                                ...userData,
+                                join_date: userData.join_date
+                                  ? new Date(
+                                      userData.join_date
+                                    ).toLocaleDateString("id-ID", {
+                                      year: "numeric",
+                                      month: "long",
+                                    })
+                                  : defaultUser.join_date,
+                              });
+                            }
+                          } catch (error) {
+                            console.error("Failed to fetch user data:", error);
+                            // Keep current user data on error
+                          }
+                        };
+                        fetchUserData();
                       }}
                     >
                       Batal
@@ -598,10 +816,17 @@ const Profile = () => {
                         </p>
                       </div>
                       <button
-                        className={`w-12 h-6 rounded-full p-1 transition-colors bg-blue-500`}
+                        onClick={toggleEmailNotifications}
+                        className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                          emailNotifications ? "bg-blue-500" : "bg-gray-300"
+                        }`}
                       >
                         <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform translate-x-6`}
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                            emailNotifications
+                              ? "translate-x-6"
+                              : "translate-x-0"
+                          }`}
                         />
                       </button>
                     </div>
@@ -614,18 +839,58 @@ const Profile = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-medium">Privasi Profil</h4>
+                        <h4 className="font-medium">Profil Privat</h4>
                         <p className="text-sm text-gray-500">
-                          Hanya tampilkan profil ke pengguna yang login
+                          Sembunyikan profil Anda dari pengguna lain
                         </p>
                       </div>
                       <button
-                        className={`w-12 h-6 rounded-full p-1 transition-colors bg-gray-300`}
+                        onClick={togglePrivateProfile}
+                        className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                          privateProfile ? "bg-blue-500" : "bg-gray-300"
+                        }`}
                       >
                         <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform translate-x-0`}
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                            privateProfile ? "translate-x-6" : "translate-x-0"
+                          }`}
                         />
                       </button>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`p-4 rounded-lg ${
+                      darkMode ? "bg-gray-700" : "bg-gray-100"
+                    }`}
+                  >
+                    <h4 className="font-medium mb-2">Akun</h4>
+                    <div className="space-y-2">
+                      <button
+                        className="text-blue-500 hover:underline text-sm"
+                        onClick={() => {
+                          // Reset password logic would go here
+                          alert("Fitur reset password belum tersedia.");
+                        }}
+                      >
+                        Ubah Kata Sandi
+                      </button>
+                      <div className="block">
+                        <button
+                          className="text-red-500 hover:underline text-sm"
+                          onClick={() => {
+                            const confirmDelete = window.confirm(
+                              "Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan."
+                            );
+                            if (confirmDelete) {
+                              // Delete account logic would go here
+                              alert("Fitur hapus akun belum tersedia.");
+                            }
+                          }}
+                        >
+                          Hapus Akun
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -633,18 +898,19 @@ const Profile = () => {
             </div>
           )}
         </motion.div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center p-4">
-          <p
-            className={`text-sm ${
-              darkMode ? "text-gray-400" : "text-gray-500"
-            }`}
-          >
-            © 2025 TOKOENO - User Profile Version 1.0
-          </p>
-        </div>
       </div>
+
+      {/* Footer with version info */}
+      <footer
+        className={`mt-16 text-center py-6 ${
+          darkMode ? "text-gray-400" : "text-gray-500"
+        }`}
+      >
+        <p className="text-sm">Version 1.0.0</p>
+        <p className="text-xs mt-1">
+          © {new Date().getFullYear()} Your Company Name
+        </p>
+      </footer>
     </div>
   );
 };
