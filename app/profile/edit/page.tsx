@@ -98,12 +98,10 @@ const EditProfile = () => {
     const hasSeenTips = localStorage.getItem("hasSeenProfileEditTips");
     if (!hasSeenTips) {
       setShowHelpTips(true);
-      // Set flag so it doesn't show automatically next time
       localStorage.setItem("hasSeenProfileEditTips", "true");
     }
   }, []);
 
-  // Toggle dark mode
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
