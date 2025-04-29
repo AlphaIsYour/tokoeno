@@ -212,7 +212,6 @@ const EditProfile = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -221,7 +220,6 @@ const EditProfile = () => {
     try {
       setSaving(true);
 
-      // Prepare updated user data
       const updatedUser = {
         ...user,
         name: formData.name,
@@ -238,10 +236,8 @@ const EditProfile = () => {
         },
       };
 
-      // Send update request
       await axios.put(`/api/user/${user.id}`, updatedUser);
 
-      // Show success notification with fun message
       const successMessages = [
         "Woohoo! Profil kamu sudah diperbarui! ✨",
         "Keren! Perubahan tersimpan dengan mulus! 🚀",
