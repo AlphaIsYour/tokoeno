@@ -539,7 +539,6 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {user.social && Object.entries(user.social).length > 0 ? (
                   Object.entries(user.social).map(([platform, url]) => {
-                    // Choose icon based on platform
                     let icon;
                     switch (platform) {
                       case "twitter":
@@ -726,7 +725,6 @@ const Profile = () => {
                     <button
                       className="text-blue-500 hover:underline text-sm"
                       onClick={() => {
-                        // Reset password logic would go here
                         alert("Fitur reset password belum tersedia.");
                       }}
                     >
