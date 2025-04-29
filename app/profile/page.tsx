@@ -97,7 +97,6 @@ const Profile = () => {
           const isNewUser = !userData || Object.keys(userData).length === 0;
 
           if (isNewUser) {
-            // For new users, create a default profile with session data
             const newUserData: User = {
               ...defaultUser,
               id: session.user.id || "",
@@ -107,7 +106,6 @@ const Profile = () => {
             };
             setUser(newUserData);
           } else {
-            // For existing users, merge the database user with default values
             setUser({
               ...defaultUser, // Provide defaults for any missing fields
               ...userData,
