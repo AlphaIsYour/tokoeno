@@ -6,9 +6,8 @@ import Image from "next/image";
 import "./style.css";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 
-// Replace Font Awesome with more compatible icons
 import {
   FaTwitter,
   FaInstagram,
