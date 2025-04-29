@@ -130,9 +130,8 @@ const EditProfile = () => {
             initFormData(newUserData);
           } else {
             const mergedUser = {
-              ...defaultUser, // Provide defaults for any missing fields
+              ...defaultUser,
               ...userData,
-              // Format join date if available
               join_date: userData.join_date
                 ? new Date(userData.join_date).toLocaleDateString("id-ID", {
                     year: "numeric",
