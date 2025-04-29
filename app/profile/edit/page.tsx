@@ -144,7 +144,6 @@ const EditProfile = () => {
           }
         } catch (error) {
           console.error("Failed to fetch user data:", error);
-          // Fall back to session data with default values
           const fallbackUser = {
             ...defaultUser,
             id: session.user.id || "",
@@ -158,7 +157,6 @@ const EditProfile = () => {
           setLoading(false);
         }
       } else if (status === "unauthenticated") {
-        // Redirect to login if not authenticated
         window.location.href = "/login";
       }
     };
@@ -166,7 +164,6 @@ const EditProfile = () => {
     fetchUserData();
   }, [session, status]);
 
-  // Initialize form data from user object
   const initFormData = (userData: User) => {
     setFormData({
       name: userData.name || "",
