@@ -137,7 +137,6 @@ const Profile = () => {
     fetchUserData();
   }, [session, status]);
 
-  // Fetch user preferences
   useEffect(() => {
     const fetchUserPreferences = async () => {
       if (status === "authenticated") {
@@ -150,7 +149,6 @@ const Profile = () => {
           }
         } catch (error) {
           console.error("Failed to fetch user preferences:", error);
-          // Use defaults if preferences can't be fetched
         }
       }
     };
