@@ -258,11 +258,10 @@ const EditProfile = () => {
         type: "success",
       });
 
-      // Hide notification after 5 seconds
       setTimeout(() => {
         setNotification((prev) => ({ ...prev, show: false }));
         // Optional: Navigate back to profile after successful update
-        // router.push("/profile");
+        router.push("/profile");
       }, 5000);
 
       // Allow some time for the notification to be visible
