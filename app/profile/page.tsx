@@ -46,7 +46,6 @@ interface User {
   pinnedItems: { id: string; name: string; image: string }[];
 }
 
-// Fallback default user data - making sure all fields from User interface are provided
 const defaultUser: User = {
   id: "",
   name: "User",
@@ -83,7 +82,7 @@ const Profile = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   // Fetch user data when component mounts or session changes
   useEffect(() => {
