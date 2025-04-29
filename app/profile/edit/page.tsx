@@ -176,12 +176,10 @@ const EditProfile = () => {
       linkedin: userData.social?.linkedin || "",
     });
 
-    // Set image previews
     setImagePreview(userData.image);
     setCoverPreview(userData.cover_pic);
   };
 
-  // Handle input changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
