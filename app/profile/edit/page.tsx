@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import Link from "next/link";
 
-// Import icons
 import {
   FaUser,
   FaMapMarkerAlt,
@@ -26,7 +25,6 @@ import {
   FaSun,
 } from "react-icons/fa";
 
-// Interface matching the User from the profile page
 interface User {
   id: string;
   name: string;
@@ -79,7 +77,6 @@ const EditProfile = () => {
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [showHelpTips, setShowHelpTips] = useState(false);
 
-  // Form states
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -91,18 +88,15 @@ const EditProfile = () => {
     linkedin: "",
   });
 
-  // Notification state
   const [notification, setNotification] = useState({
     show: false,
     message: "",
     type: "success",
   });
 
-  // Optional: Check if user has seen tips before
   useEffect(() => {
     const hasSeenTips = localStorage.getItem("hasSeenProfileEditTips");
     if (!hasSeenTips) {
-      // Show tips automatically for first-time users
       setShowHelpTips(true);
       // Set flag so it doesn't show automatically next time
       localStorage.setItem("hasSeenProfileEditTips", "true");
