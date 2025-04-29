@@ -6,6 +6,7 @@ import Image from "next/image";
 import "./style.css";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 // Replace Font Awesome with more compatible icons
 import {
@@ -77,13 +78,13 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState<"profile" | "social" | "settings">(
     "profile"
   );
-  const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
+  const router = useRouter(); // Initialize router
 
   // Fetch user data when component mounts or session changes
   useEffect(() => {
@@ -166,22 +167,9 @@ const Profile = () => {
     fetchUserPreferences();
   }, [status]);
 
-  const handleEdit = () => setIsEditing(true);
-
-  const handleSave = async () => {
-    if (!user) return;
-
-    try {
-      await axios.put(`/api/user/${user.id}`, {
-        name: user.name,
-        bio: user.bio,
-        location: user.location,
-      });
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Failed to update user data:", error);
-      alert("Failed to save changes. Please try again.");
-    }
+  // New function to handle navigation to edit profile page
+  const handleNavigateToEdit = () => {
+    router.push("/profile/edit");
   };
 
   const toggleDarkMode = async () => {
@@ -651,250 +639,131 @@ const Profile = () => {
 
           {activeTab === "settings" && (
             <div className="space-y-6">
-              {isEditing ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Nama
-                    </label>
-                    <input
-                      type="text"
-                      value={user.name}
-                      onChange={(e) =>
-                        setUser({ ...user, name: e.target.value })
-                      }
-                      className={`w-full p-2 rounded-lg border ${
-                        darkMode
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-200"
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Bio
-                    </label>
-                    <textarea
-                      value={user.bio || ""}
-                      onChange={(e) =>
-                        setUser({ ...user, bio: e.target.value })
-                      }
-                      className={`w-full p-2 rounded-lg border ${
-                        darkMode
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-200"
-                      }`}
-                      rows={4}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Lokasi
-                    </label>
-                    <input
-                      type="text"
-                      value={user.location || ""}
-                      onChange={(e) =>
-                        setUser({ ...user, location: e.target.value })
-                      }
-                      className={`w-full p-2 rounded-lg border ${
-                        darkMode
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-200"
-                      }`}
-                    />
-                  </div>
-                  <div className="flex gap-2">
+              <div className="space-y-4">
+                {/* Edit Profile button that redirects to edit page */}
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                  onClick={handleNavigateToEdit}
+                >
+                  <FaEdit />
+                  Edit Profil
+                </button>
+                <div
+                  className={`p-4 rounded-lg ${
+                    darkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Mode Gelap</h4>
+                      <p className="text-sm text-gray-500">
+                        Aktifkan tema gelap
+                      </p>
+                    </div>
                     <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded-lg flex-1"
-                      onClick={handleSave}
+                      onClick={toggleDarkMode}
+                      className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                        darkMode ? "bg-blue-500" : "bg-gray-300"
+                      }`}
                     >
-                      Simpan Perubahan
+                      <div
+                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                          darkMode ? "translate-x-6" : "translate-x-0"
+                        }`}
+                      />
                     </button>
+                  </div>
+                </div>
+
+                <div
+                  className={`p-4 rounded-lg ${
+                    darkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Notifikasi Email</h4>
+                      <p className="text-sm text-gray-500">
+                        Terima email tentang pesanan baru
+                      </p>
+                    </div>
                     <button
-                      className={`px-4 py-2 rounded-lg flex-1 ${
-                        darkMode ? "bg-gray-700 text-white" : "bg-gray-200"
+                      onClick={toggleEmailNotifications}
+                      className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                        emailNotifications ? "bg-blue-500" : "bg-gray-300"
                       }`}
+                    >
+                      <div
+                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                          emailNotifications ? "translate-x-6" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  className={`p-4 rounded-lg ${
+                    darkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Profil Privat</h4>
+                      <p className="text-sm text-gray-500">
+                        Sembunyikan profil Anda dari pengguna lain
+                      </p>
+                    </div>
+                    <button
+                      onClick={togglePrivateProfile}
+                      className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                        privateProfile ? "bg-blue-500" : "bg-gray-300"
+                      }`}
+                    >
+                      <div
+                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                          privateProfile ? "translate-x-6" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  className={`p-4 rounded-lg ${
+                    darkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  <h4 className="font-medium mb-2">Akun</h4>
+                  <div className="space-y-2">
+                    <button
+                      className="text-blue-500 hover:underline text-sm"
                       onClick={() => {
-                        setIsEditing(false);
-                        // Reset changes by fetching fresh data
-                        const fetchUserData = async () => {
-                          try {
-                            const response = await axios.get(
-                              `/api/user?email=${session?.user?.email}`
-                            );
-
-                            // Check if we got data or if this is a new user
-                            const userData = response.data;
-                            const isNewUser =
-                              !userData || Object.keys(userData).length === 0;
-
-                            if (isNewUser) {
-                              // For new users, create a default profile with session data
-                              const newUserData: User = {
-                                ...defaultUser,
-                                id: session?.user?.id || "",
-                                name: session?.user?.name || "User",
-                                email: session?.user?.email || "",
-                                image:
-                                  session?.user?.image || defaultUser.image,
-                              };
-                              setUser(newUserData);
-                            } else {
-                              // For existing users, merge database data with defaults
-                              setUser({
-                                ...defaultUser,
-                                ...userData,
-                                join_date: userData.join_date
-                                  ? new Date(
-                                      userData.join_date
-                                    ).toLocaleDateString("id-ID", {
-                                      year: "numeric",
-                                      month: "long",
-                                    })
-                                  : defaultUser.join_date,
-                              });
-                            }
-                          } catch (error) {
-                            console.error("Failed to fetch user data:", error);
-                            // Keep current user data on error
-                          }
-                        };
-                        fetchUserData();
+                        // Reset password logic would go here
+                        alert("Fitur reset password belum tersedia.");
                       }}
                     >
-                      Batal
+                      Ubah Kata Sandi
                     </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                    onClick={handleEdit}
-                  >
-                    <FaEdit />
-                    Edit Profil
-                  </button>
-                  <div
-                    className={`p-4 rounded-lg ${
-                      darkMode ? "bg-gray-700" : "bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">Mode Gelap</h4>
-                        <p className="text-sm text-gray-500">
-                          Aktifkan tema gelap
-                        </p>
-                      </div>
+                    <div className="block">
                       <button
-                        onClick={toggleDarkMode}
-                        className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                          darkMode ? "bg-blue-500" : "bg-gray-300"
-                        }`}
-                      >
-                        <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                            darkMode ? "translate-x-6" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`p-4 rounded-lg ${
-                      darkMode ? "bg-gray-700" : "bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">Notifikasi Email</h4>
-                        <p className="text-sm text-gray-500">
-                          Terima email tentang pesanan baru
-                        </p>
-                      </div>
-                      <button
-                        onClick={toggleEmailNotifications}
-                        className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                          emailNotifications ? "bg-blue-500" : "bg-gray-300"
-                        }`}
-                      >
-                        <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                            emailNotifications
-                              ? "translate-x-6"
-                              : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`p-4 rounded-lg ${
-                      darkMode ? "bg-gray-700" : "bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">Profil Privat</h4>
-                        <p className="text-sm text-gray-500">
-                          Sembunyikan profil Anda dari pengguna lain
-                        </p>
-                      </div>
-                      <button
-                        onClick={togglePrivateProfile}
-                        className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                          privateProfile ? "bg-blue-500" : "bg-gray-300"
-                        }`}
-                      >
-                        <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                            privateProfile ? "translate-x-6" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`p-4 rounded-lg ${
-                      darkMode ? "bg-gray-700" : "bg-gray-100"
-                    }`}
-                  >
-                    <h4 className="font-medium mb-2">Akun</h4>
-                    <div className="space-y-2">
-                      <button
-                        className="text-blue-500 hover:underline text-sm"
+                        className="text-red-500 hover:underline text-sm"
                         onClick={() => {
-                          // Reset password logic would go here
-                          alert("Fitur reset password belum tersedia.");
+                          const confirmDelete = window.confirm(
+                            "Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan."
+                          );
+                          if (confirmDelete) {
+                            // Delete account logic would go here
+                            alert("Fitur hapus akun belum tersedia.");
+                          }
                         }}
                       >
-                        Ubah Kata Sandi
+                        Hapus Akun
                       </button>
-                      <div className="block">
-                        <button
-                          className="text-red-500 hover:underline text-sm"
-                          onClick={() => {
-                            const confirmDelete = window.confirm(
-                              "Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan."
-                            );
-                            if (confirmDelete) {
-                              // Delete account logic would go here
-                              alert("Fitur hapus akun belum tersedia.");
-                            }
-                          }}
-                        >
-                          Hapus Akun
-                        </button>
-                      </div>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           )}
         </motion.div>
