@@ -156,7 +156,6 @@ const Profile = () => {
     fetchUserPreferences();
   }, [status]);
 
-  // New function to handle navigation to edit profile page
   const handleNavigateToEdit = () => {
     router.push("/profile/edit");
   };
@@ -199,7 +198,6 @@ const Profile = () => {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  // Show loading state while fetching data
   if (loading || !user) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gray-100">
