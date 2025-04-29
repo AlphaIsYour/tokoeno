@@ -84,7 +84,6 @@ const Profile = () => {
   const [privateProfile, setPrivateProfile] = useState(false);
   const router = useRouter();
 
-  // Fetch user data when component mounts or session changes
   useEffect(() => {
     const fetchUserData = async () => {
       if (status === "authenticated" && session?.user?.email) {
@@ -94,7 +93,6 @@ const Profile = () => {
             `/api/user?email=${session.user.email}`
           );
 
-          // Check if we got data or if this is a new user
           const userData = response.data;
           const isNewUser = !userData || Object.keys(userData).length === 0;
 
