@@ -12,7 +12,6 @@ import Link from "next/link";
 import {
   FaUser,
   FaMapMarkerAlt,
-  FaEnvelope,
   FaTwitter,
   FaInstagram,
   FaGithub,
