@@ -190,7 +190,6 @@ const EditProfile = () => {
     }));
   };
 
-  // Handle profile image change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -202,7 +201,6 @@ const EditProfile = () => {
     }
   };
 
-  // Handle cover image change
   const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
