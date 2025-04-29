@@ -119,7 +119,6 @@ const Profile = () => {
           }
         } catch (error) {
           console.error("Failed to fetch user data:", error);
-          // Fall back to session data with default values
           setUser({
             ...defaultUser,
             id: session.user.id || "",
@@ -131,7 +130,6 @@ const Profile = () => {
           setLoading(false);
         }
       } else if (status === "unauthenticated") {
-        // Redirect to login if not authenticated
         window.location.href = "/login";
       }
     };
