@@ -51,7 +51,6 @@ const Slider = () => {
     fetchEvents();
   }, []);
 
-  // Buat images dan extendedImages
   const images = events.map((event) => event.imageUrl);
   const extendedImages = events.length
     ? [images[images.length - 1], ...images, images[0]]
