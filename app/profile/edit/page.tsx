@@ -298,7 +298,6 @@ const EditProfile = () => {
     router.push("/profile");
   };
 
-  // Show loading state while fetching data
   if (loading && !user) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gray-100">
