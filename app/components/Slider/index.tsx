@@ -17,7 +17,6 @@ interface Event {
   imageUrl: string;
 }
 
-// Skeleton Loading
 const SkeletonSlider = () => {
   return (
     <div className="slider-container relative w-full sm:w-335 mx-auto h-48 sm:h-80 bg-gray-200 animate-shimmer rounded-xl overflow-hidden">
