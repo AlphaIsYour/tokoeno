@@ -264,7 +264,6 @@ const EditProfile = () => {
         router.push("/profile");
       }, 5000);
 
-      // Allow some time for the notification to be visible
       setTimeout(() => {
         router.push("/profile");
       }, 2000);
