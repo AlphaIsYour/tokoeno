@@ -64,7 +64,6 @@ const Slider = () => {
     setCurrentIndex((prevIndex) => prevIndex - 1);
   };
 
-  // Auto-slide
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isHovering && !loading) nextSlide();
