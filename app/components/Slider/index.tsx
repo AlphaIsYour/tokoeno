@@ -93,7 +93,6 @@ const Slider = () => {
     }
   }, [currentIndex, events.length, images.length]);
 
-  // Skeleton kalau loading atau kosong
   if (loading || !events.length) {
     return <SkeletonSlider />;
   }
