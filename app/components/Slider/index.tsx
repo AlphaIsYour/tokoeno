@@ -33,7 +33,6 @@ const Slider = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Fetch events
   useEffect(() => {
     async function fetchEvents() {
       try {
