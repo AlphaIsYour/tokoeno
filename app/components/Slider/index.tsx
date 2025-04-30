@@ -71,7 +71,6 @@ const Slider = () => {
     return () => clearInterval(interval);
   }, [nextSlide, isHovering, loading]);
 
-  // Reset batas kanan
   useEffect(() => {
     if (events.length && currentIndex === extendedImages.length - 1) {
       setTimeout(() => {
