@@ -82,7 +82,6 @@ const Slider = () => {
     }
   }, [currentIndex, events.length, extendedImages.length]);
 
-  // Reset batas kiri
   useEffect(() => {
     if (events.length && currentIndex === 0) {
       setTimeout(() => {
