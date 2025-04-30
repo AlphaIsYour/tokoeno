@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Space_Grotesk } from "next/font/google";
 const grotesk = Space_Grotesk({ subsets: ["latin"], weight: ["300", "700"] });
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
 import "./style.css";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
@@ -28,6 +29,14 @@ const Navbar = () => {
   const [showKategori, setShowKategori] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <>
@@ -55,17 +64,24 @@ const Navbar = () => {
                 </div>
 
                 <div className="relative w-8/12 mx-2">
-                  <input
-                    type="text"
-                    placeholder="Cari di Youralpha"
-                    className="w-full py-2 px-4 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <FontAwesomeIcon
-                      icon={faSearch}
-                      className="text-gray-400 text-base"
+                  <form onSubmit={handleSearch}>
+                    <input
+                      type="text"
+                      placeholder="Cari di Tokoeno"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full py-2 px-4 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                     />
-                  </div>
+                    <button
+                      type="submit"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    >
+                      <FontAwesomeIcon
+                        icon={faSearch}
+                        className="text-gray-400 text-base"
+                      />
+                    </button>
+                  </form>
                 </div>
 
                 <div className="w-1/12">
@@ -170,19 +186,26 @@ const Navbar = () => {
 
             {/* Search Bar */}
             <div className="mt-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Cari di Youralpha"
-                  className="w-full py-2 px-4 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className="text-gray-400 text-base"
+              <form onSubmit={handleSearch}>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Cari di Tokoeno"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full py-2 px-4 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <button
+                    type="submit"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  >
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      className="text-gray-400 text-base"
+                    />
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
 
             {/* Mobile Menu */}
