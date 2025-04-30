@@ -36,7 +36,6 @@ const Produk = () => {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        // Simulasi jeda 1.5 detik untuk efek skeleton
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
         const res = await fetch("/api/products");

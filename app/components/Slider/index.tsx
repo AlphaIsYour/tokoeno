@@ -10,7 +10,6 @@ import {
 import Image from "next/image";
 import "./style.css";
 
-// Tipe buat event
 interface Event {
   id: number;
   name: string;
