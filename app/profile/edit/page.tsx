@@ -294,7 +294,6 @@ const EditProfile = () => {
     }
   };
 
-  // Handle back button click
   const handleBack = () => {
     router.push("/profile");
   };
