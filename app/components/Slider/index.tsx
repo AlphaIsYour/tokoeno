@@ -40,7 +40,7 @@ const Slider = () => {
         const res = await fetch("/api/events");
         if (!res.ok) throw new Error("Gagal ambil events");
         const data = await res.json();
-        console.log("[SLIDER_EVENTS]", data); // Debug
+        console.log("[SLIDER_EVENTS]", data);
         setEvents(data);
       } catch (error) {
         console.error(error);
