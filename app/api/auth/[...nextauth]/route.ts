@@ -1,3 +1,4 @@
+//app/api/auth/[...nextauth]/route.ts
 import NextAuth, { AuthOptions, Session, User, Account } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -27,6 +28,19 @@ export const authOptions: AuthOptions = {
 
         console.log("[SIGNIN] Processing user:", user.email);
 
+        // Check existing columns in User table to avoid schema mismatch errors
+        const columns = await prisma.$queryRaw`
+          SELECT column_name 
+          FROM information_schema.columns 
+          WHERE table_schema = 'public' AND table_name = 'User'
+        `;
+
+        const columnNames = Array.isArray(columns)
+          ? columns.map((col: { column_name: string }) =>
+              col.column_name.toLowerCase()
+            )
+          : [];
+
         // Cek user
         let dbUser = await prisma.user.findUnique({
           where: { email: user.email },
@@ -35,15 +49,28 @@ export const authOptions: AuthOptions = {
         // Bikin user kalau nggak ada
         if (!dbUser) {
           console.log("[SIGNIN] Creating new user:", user.email);
+
+          // Construct user creation data based on available columns
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const userData: any = {
+            email: user.email,
+            name: user.name ?? user.email.split("@")[0],
+            role: user.email === "alphrenoorz@gmail.com" ? "ADMIN" : "USER",
+          };
+
+          // Only add optional fields if they exist in the schema
+          if (columnNames.includes("image") && user.image) {
+            userData.image = user.image;
+          }
+          if (columnNames.includes("provider") && account.provider) {
+            userData.provider = account.provider;
+          }
+          if (columnNames.includes("providerid") && account.providerAccountId) {
+            userData.providerId = account.providerAccountId;
+          }
+
           dbUser = await prisma.user.create({
-            data: {
-              email: user.email,
-              name: user.name ?? user.email.split("@")[0],
-              image: user.image,
-              role: user.email === "alphrenoorz@gmail.com" ? "ADMIN" : "USER",
-              provider: account.provider,
-              providerId: account.providerAccountId,
-            },
+            data: userData,
           });
         }
 
@@ -86,8 +113,16 @@ export const authOptions: AuthOptions = {
     async session({ session, user }: { session: Session; user: User }) {
       if (session.user) {
         session.user.id = user.id;
-        session.user.role = user.role;
-        session.user.image = user.image;
+
+        // Only add role if it exists in the user object
+        if ("role" in user) {
+          session.user.role = user.role;
+        }
+
+        // Only add image if it exists in the user object
+        if ("image" in user) {
+          session.user.image = user.image;
+        }
       }
       return session;
     },
