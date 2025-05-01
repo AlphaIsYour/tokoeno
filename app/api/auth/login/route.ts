@@ -54,7 +54,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Cek login dengan OAuth
     if (provider && providerId && hasProviderColumn && hasProviderIdColumn) {
       // Jika user login dengan OAuth, periksa apakah provider dan providerId cocok
       if (user.provider === provider && user.providerId === providerId) {
