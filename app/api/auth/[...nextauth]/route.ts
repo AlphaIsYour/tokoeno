@@ -28,7 +28,6 @@ export const authOptions: AuthOptions = {
 
         console.log("[SIGNIN] Processing user:", user.email);
 
-        // Check existing columns in User table to avoid schema mismatch errors
         const columns = await prisma.$queryRaw`
           SELECT column_name 
           FROM information_schema.columns 
