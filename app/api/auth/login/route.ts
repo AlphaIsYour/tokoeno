@@ -7,7 +7,6 @@ export async function POST(request: Request) {
   try {
     const { email, password, provider, providerId } = await request.json();
 
-    // Validasi input
     if (!email) {
       return NextResponse.json({ error: "Email diperlukan" }, { status: 400 });
     }
