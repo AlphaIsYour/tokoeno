@@ -107,7 +107,6 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         session.user.id = user.id;
 
-        // Only add role if it exists in the user object
         if ("role" in user) {
           session.user.role = user.role;
         }
