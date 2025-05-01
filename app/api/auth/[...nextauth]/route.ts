@@ -69,7 +69,6 @@ export const authOptions: AuthOptions = {
           });
         }
 
-        // Cek account
         const existingAccount = await prisma.account.findUnique({
           where: {
             provider_providerAccountId: {
