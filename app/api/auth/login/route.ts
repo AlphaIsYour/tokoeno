@@ -34,7 +34,6 @@ export async function POST(request: Request) {
       role: true,
     };
 
-    // Tambahkan kolom opsional jika tersedia
     const selectOptions = {
       ...baseSelect,
       ...(columnNames.includes("image") ? { image: true } : {}),
