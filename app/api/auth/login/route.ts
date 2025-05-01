@@ -11,7 +11,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email diperlukan" }, { status: 400 });
     }
 
-    // Dapatkan daftar kolom yang tersedia untuk User
     const columns = await prisma.$queryRaw`
       SELECT column_name 
       FROM information_schema.columns 
