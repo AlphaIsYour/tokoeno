@@ -44,7 +44,6 @@ export const authOptions: AuthOptions = {
           where: { email: user.email },
         });
 
-        // Bikin user kalau nggak ada
         if (!dbUser) {
           console.log("[SIGNIN] Creating new user:", user.email);
 
