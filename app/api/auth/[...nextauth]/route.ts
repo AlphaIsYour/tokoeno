@@ -54,7 +54,6 @@ export const authOptions: AuthOptions = {
             role: user.email === "alphrenoorz@gmail.com" ? "ADMIN" : "USER",
           };
 
-          // Only add optional fields if they exist in the schema
           if (columnNames.includes("image") && user.image) {
             userData.image = user.image;
           }
