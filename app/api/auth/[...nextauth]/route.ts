@@ -78,7 +78,6 @@ export const authOptions: AuthOptions = {
           },
         });
 
-        // Bikin account kalau nggak ada
         if (!existingAccount) {
           console.log("[SIGNIN] Creating new account for:", user.email);
           await prisma.account.create({
