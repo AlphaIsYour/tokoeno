@@ -47,7 +47,6 @@ export const authOptions: AuthOptions = {
         if (!dbUser) {
           console.log("[SIGNIN] Creating new user:", user.email);
 
-          // Construct user creation data based on available columns
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const userData: any = {
             email: user.email,
