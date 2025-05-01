@@ -42,7 +42,6 @@ export async function POST(request: Request) {
       ...(hasProviderIdColumn ? { providerId: true } : {}),
     };
 
-    // Cari user by email dengan select dinamis
     const user = await prisma.user.findUnique({
       where: { email },
       select: selectOptions,
