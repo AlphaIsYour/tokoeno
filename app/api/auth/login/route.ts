@@ -27,7 +27,6 @@ export async function POST(request: Request) {
     const hasProviderColumn = columnNames.includes("provider");
     const hasProviderIdColumn = columnNames.includes("providerid");
 
-    // Base select dengan kolom yang pasti ada
     const baseSelect = {
       id: true,
       name: true,
