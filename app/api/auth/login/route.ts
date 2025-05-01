@@ -55,7 +55,6 @@ export async function POST(request: Request) {
     }
 
     if (provider && providerId && hasProviderColumn && hasProviderIdColumn) {
-      // Jika user login dengan OAuth, periksa apakah provider dan providerId cocok
       if (user.provider === provider && user.providerId === providerId) {
         return NextResponse.json({
           message: "Login berhasil dengan OAuth",
