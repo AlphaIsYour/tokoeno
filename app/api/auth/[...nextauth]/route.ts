@@ -111,7 +111,6 @@ export const authOptions: AuthOptions = {
           session.user.role = user.role;
         }
 
-        // Only add image if it exists in the user object
         if ("image" in user) {
           session.user.image = user.image;
         }
